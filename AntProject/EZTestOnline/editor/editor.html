@@ -1,0 +1,2500 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd"/>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" /> 
+	<meta http-equiv="Pragma" content="no-cache"/>
+	<!-- meta http-equiv="expires" content="-1"/ -->
+	<meta http-equiv="cache-control" value="no-cache,no-store,must-revalidate,private,max-stale=0,post-check=0,pre-check=0"/>
+	<title>Question Editor</title>
+	<script>var clouFrontUrl = 'CLOUD_FRONT_URL'</script>
+	<link rel="stylesheet" href="/EZTestOnline/editor/css/editor.css" />
+	
+	<!-- Ephox EditLive editor code - ephox_redistributes is always a standard distribution with NO MHHE code -->
+	<script src="/EZTestOnline/editor/ephox_redistributables/editlivejava/editlivejava.js" language="JavaScript" type="text/javascript"></script>
+	<script src="/EZTestOnline/editor/ephox_redistributables/editlivejava/inlineEditing.js" language="JavaScript" type="text/javascript"></script>
+	
+	<script src="/EZTestOnline/jquery/jquery_1.6.2/jquery.min.js" language="JavaScript" type="text/javascript"></script>
+	<script src="/EZTestOnline/jquery/plugins/jquery.json-2.3.min.js" language="JavaScript" type="text/javascript"></script>
+	<!--script src="jquery.min.js" language="JavaScript" type="text/javascript"></script-->
+	<!--script src="jquery.json-2.3.min.js" language="JavaScript" type="text/javascript"></script-->
+
+	<script src="/EZTestOnline/ezto_ext.js" language="JavaScript" type="text/javascript"></script>
+
+	<script type="text/javascript" src="/EZTestOnline/jquery/plugins/jquery.sortElements.js"></script>
+
+	<script type="text/javascript" src="/EZTestOnline/jquery/plugins/jquery.qtip-1.0.min.js"></script>
+	<script type="text/javascript" src="/EZTestOnline/Connect/common/tooltip/js/tooltipInit.js"></script>
+	<link rel="stylesheet" href="/EZTestOnline/Connect/common/tooltip/CSS/tooltip.css" type="text/css" />
+
+	<!-- following is a temporary jQuery theme for development until UX provides a final theme, includes ALL jQueryUI code -->
+	<link type="text/css" href="/EZTestOnline/editor/jquery-ui-1.8.16.flick/css/flick/jquery-ui-1.8.16.custom.css" rel="stylesheet" />	
+	<script type="text/javascript" src="/EZTestOnline/editor/jquery-ui-1.8.16.flick/js/jquery-ui-1.8.16.custom.min.js"></script>
+	
+	<!-- MHHE code
+		editor.js is common code to invoke/hide EditLive
+		editor_types.js is code to manage content
+		editor_ajax.js is code to manage server communication
+		editor_media.js is code to manage media tab
+	-->
+	<script src="/EZTestOnline/editor/editor.js" language="JavaScript" type="text/javascript"></script>
+	<script src="/EZTestOnline/editor/editor_media.js" language="JavaScript" type="text/javascript"></script>
+	<script src="/EZTestOnline/editor/editor_types.js" language="JavaScript" type="text/javascript"></script>
+	<script src="/EZTestOnline/editor/editor_ajax.js" language="JavaScript" type="text/javascript"></script>
+	
+	<!--[if !IE]> -->
+	   <script type="text/javascript" src="/EZTestOnline/ezto_domain.js"></script>
+	<!-- <![endif]-->
+	<script type="text/javascript" src="/EZTestOnline/ezto_ext.js"></script>
+	
+	<script type="text/javascript" src="/EZTestOnline/MediaPlayers/Nimbb.js"></script>
+	<script type="text/javascript" src="/EZTestOnline/MediaPlayers/NimbbPlayer.js"></script>
+	<script type="text/javascript" src="/EZTestOnline/MediaPlayers/NimbbInstance.js"></script>
+	<script type="text/javascript" src="/EZTestOnline/jquery/plugins/jquery.nimbb.js"></script>
+	<script type="text/javascript" src="/EZTestOnline/MediaPlayers/mediaPlayers.js"></script>
+	<link rel="stylesheet" href="/EZTestOnline/MediaPlayers/mediaPlayers.css" type="text/css" />
+	<script type="text/javascript" src="/EZTestOnline/jquery/libs/jqModal.js"></script>
+	<link rel="stylesheet" href="/EZTestOnline/Connect/common/modal/modal.css" type="text/css" />
+	<!--[if lt IE 8]><link rel="stylesheet" href="/EZTestOnline/MediaPlayers/mediaPlayers.ie.css" type="text/css" />
+	<![endif]-->
+	<script type="text/javascript" src="/EZTestOnline/flowplayer-3.2.4.min.js"></script>
+	
+
+	<script language="JavaScript" type="text/javascript">
+	$(document).ready(function() 
+	{
+		editor_master_init();
+	});
+	</script>
+</head>
+
+
+<body>
+<div id="container">
+
+<!-- header -->
+<div id="header-wrap"><div id="header-container"><div id="header">
+	<table id="ej_navbar"><tr>		
+		<td id="ej_navbar_left">
+			<button class="ej_uninvolved" id="ej_bailout" onclick="editor_exit();">exit</button>
+			<button class="ej_uninvolved save_enabled" id="ej_revert" onclick="editor_revert();">revert</button>
+		</td>
+		<td id="ej_navbar_center">
+			<span class="ej_assignment_controls">
+				<button id="ej_previous" class="ej_nextPrev ej_uninvolved ej_leftDisabled" onclick="editor_previous();"></button>&nbsp;
+				<select class="ej_uninvolved ej_select" id="ej_questionList" onchange="editor_navigate();">
+					<option value="1234">Question #1</option>
+					<option value="5678">Question #2</option>
+					<option value="9012">Question #3</option>
+				</select>&nbsp;
+				<span class="save_enabled">
+					<button id="ej_next" class="ej_nextPrev ej_uninvolved ej_rightDisabled" onclick="editor_next();"></button>&nbsp;|&nbsp;
+					<button class="ej_uninvolved" id="ej_new" onclick="editor_newQuestion();"></button>&nbsp;|&nbsp;
+					<div id="ej_newqmenu" style="display: none;">
+						<a href="javascript:void(0);" onclick="newq_start('CA');">check all that apply</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('LS');">chemistry / engineering / math / physics</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('ES');">essay</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('DO');">file attachment</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('FB');">fill in the blank</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('MP');">maple</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('MA');">matching</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('MC');">multiple choice</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('NU');">numeric response</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('RA');">ranking</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('SB');">section break</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('SA');">short answer</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('SV');">survey</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('TF');">true / false</a><br>
+						<a href="javascript:void(0);" onclick="newq_start('WK');">worksheet</a><br>
+						<span id="ww_new"><a href="javascript:void(0);" onclick="newq_start('WW');">wwtb</a><br></span>
+						<a href="javascript:void(0);" onclick="newq_start('YN');">yes / no</a><hr class="menu_separator">
+						<a href="javascript:void(0);" onclick="newq_start('dup');">duplicate the current question</a><br>
+					</div>
+				</span>
+			</span>
+			<button class="ej_uninvolved" id="ej_preview" onclick="editor_preview();"></button>
+		</td>
+		<td id="ej_navbar_right">
+			<button class="ej_uninvolved save_enabled ej_assignment_controls" id="ej_back" onclick="editor_save();">save</button>&nbsp;
+		</td>
+	</tr></table>
+</div></div></div>
+
+<!-- content starts here -->
+<div id="ej_tabs">
+	<ul>
+		<li><a class="ej_uninvolved" id="questionViewLink" href="#questionView">Question</a></li>
+		<li><a class="ej_uninvolved" href="#detailsView">Details</a></li>
+		<li><a class="ej_uninvolved nomaple nowwtb" href="#variablesView">Random Variables</a></li>
+		<li><a class="ej_uninvolved" href="#categoriesView">Categories</a></li>
+		<li><a class="ej_uninvolved" href="#mediaView">Media</a></li>
+		<li><a class="ej_uninvolved worksheet" href="#worksheetAnswerView">Worksheet Answers</a></li>
+	</ul>
+
+<!-- question view -->
+<div id="questionView">
+
+	
+<div class="ej_wrapper">
+
+	<div class="ej_primary_label ej_uninvolved">Question Title</div>
+	<input type="text" maxlength="255" class="ej_uninvolved ej_title" id="qtitle" value="title goes here..."/>
+	
+	<div id="typeLabel" class="ej_primary_label ej_uninvolved">Undefined Question Type</div>
+	<div class="ej_editable" id="stem">Stem goes here...</div>
+	<div class="ej_primary_label ej_uninvolved">Audio</div>
+	<div class="ui-state-default" style="width:100%;height:44px;margin-bottom: 8px;">
+	  <div id="audioinseditorDiv" style="width:300px;float:left;"></div>
+	  <div class="ej_aside" style="float:left;padding:10px;">
+	     Recorder Orientation:&nbsp;&nbsp;<input type="radio" name="audioPlayerPosition" value="above" checked="checked">&nbsp;Above Question&nbsp;&nbsp;&nbsp;&nbsp;<input type="radio" name="audioPlayerPosition" value="below">&nbsp;Below Question
+	  </div>
+	</div>
+		
+		
+	<!-- multiple choice -->	
+	<div class="multipleChoice">
+		<div class="ej_primary_label">
+			<span class="ej_uninvolved">Answer Choices</span>
+			<div id="mc_asf"><input id="mc_asf_ctrl" type="checkbox" onclick="mc_asf_toggle();">add separate feedback for each choice</div>
+		</div>
+	
+		<ul id="mc_choices" class="sortable">
+			
+			<li class="mc_choice_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+			<table class="mc_choice_table"><tr>
+				<td class="ej_table_label mc_choice_label ej_uninvolved">X</td>
+				<td>
+					<table class="mc_choice_pair">
+						<tr><td>
+							<span class="ej_secondary_label ej_uninvolved">distractor</span>
+							<div class="ej_editable mc_distractor"></div>
+						</td></tr>
+						<tr class="mc_asfeedback"><td>
+							<span class="ej_secondary_label ej_uninvolved">feedback</span>
+							<div class="ej_editable mc_feedback"></div>
+						</td></tr>
+					</table>
+				</td>
+				<td class="mc_choice_control_cell">
+					<table><tr><td class="mc_choice_controls">
+						<button class="mc_correctness mc_incorrect ej_uninvolved"></button>
+						<button class="mc_del_choice_control ej_uninvolved"></button>
+					</td></tr></table>
+				</td>
+			</tr></table></li>
+	
+		</ul><!-- end sortable choices -->
+		
+		<!-- add new choice control -->
+		<div id="mc_add_choice">
+			<a class="ej_uninvolved" href="javascript:void(0);" name="addAnotherChoice" onclick="mc_add_choice();">+ add another choice</a>
+		</div>
+		
+			
+		<!-- choice presentation order -->
+		<div id="choice_wrapper">   
+			<div class="ej_secondary_label ej_uninvolved" id="choice-order">order:
+			<select class="ej_uninvolved ej_select_small" id="mc_choiceorder">
+			<option value="as listed">as listed</option>
+			<option value="scrambled">scramble</option>
+			<option value="lock as listed">never scramble</option>
+			</select>
+			</div>
+			
+			<div class="ej_secondary_label ej_uninvolved">choice layout:</div>
+			
+			<table class="layout_table" id="mc_layout_table">
+				<tr>
+					<td>
+						<div class="ej_uninvolved mc_layout_vertical"></div>
+						Vertical<br>
+						<input class="ej_uninvolved" type="radio" name="mc_layout" id="mc_layoutctrl_vertical" value="vertical"/>
+					</td>
+					<td>
+						<div class="ej_uninvolved mc_layout_horiz"></div>
+						Horizontal<br>
+						<input class="ej_uninvolved" type="radio" name="mc_layout" id="mc_layoutctrl_horiz" value="horizontal"/>
+					</td>
+					<td>
+						<div class="ej_uninvolved mc_layout_twocol"></div>
+						Two Column<br>
+						<input class="ej_uninvolved" type="radio" name="mc_layout" id="mc_layoutctrl_twocol" value="two_column"/>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for all choices)</span></div>
+		<div class="ej_editable ej_common_feedback" id="mc_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="mc_solution"></div>
+					
+	</div>
+	<!-- multipleChoice layout -->
+		
+
+	<!-- maple -->	
+	<div class="maple">
+		<input type="hidden" id="Q_MAPLE_instanceid" name="Q_MAPLE_instanceid" value="instance2"></input>
+		<input type="hidden" id="Q_MAPLE_rnd" name="Q_MAPLE_rnd" value=""></input>
+		<input type="hidden" id="Q_MAPLE_media" name="Q_MAPLE_media" value=""></input>
+		<input type="hidden" id="Q_MAPLE_eval" name="Q_MAPLE_eval" value=""></input>
+		<input type="hidden" id="Q_MAPLE_mode" name="Q_MAPLE_mode" value="design"></input>
+		<textarea autocomplete=\"off\" spellcheck=\"false\" style="display:none;" id="Q_MAPLE_state" name="Q_MAPLE_state"></textarea>
+		<div id="Q_MAPLE_div" name="Q_MAPLE_div"></div>
+
+		<div class="ej_primary_label ej_uninvolved">Custom Question Type Title
+			<div class="ej_assistive">
+				Instead of "Maple", you can enter a title that describes more about your content.
+			</div>
+		</div>
+		<input type="text" id="mp_customType" maxlength="80" />
+		
+		<p>
+			<input type="checkbox" id="mp_algo" value="1" /> algorithmic
+		</p>
+	</div>
+	<!-- maple layout -->
+		
+	
+	<!-- wwtb -->	
+	<div class="wwtb">
+		<input type="hidden" id="Q_WWTB_instanceid" name="Q_WWTB_instanceid" value="instance2"></input>
+		<input type="hidden" id="Q_WWTB_rnd" name="Q_WWTB_rnd" value=""></input>
+		<input type="hidden" id="Q_WWTB_media" name="Q_WWTB_media" value=""></input>
+		<input type="hidden" id="Q_WWTB_eval" name="Q_WWTB_eval" value=""></input>
+		<input type="hidden" id="Q_WWTB_mode" name="Q_WWTB_mode" value="design"></input>
+		<textarea autocomplete=\"off\" spellcheck=\"false\" style="display:none;" id="Q_WWTB_state" name="Q_WWTB_state"></textarea>
+		<div id="Q_WWTB_div" name="Q_WWTB_div"></div>
+
+		<div class="ej_primary_label ej_uninvolved">Custom Question Type Title
+			<div class="ej_assistive">
+				Instead of "WWTB", you can enter a title that describes more about your content.
+			</div>
+		</div>
+		<input type="text" id="ww_customType" maxlength="80" />
+		
+		<p>
+			<input type="checkbox" id="ww_algo" value="1" /> algorithmic
+		</p>
+	</div>
+	<!-- wwtb layout -->
+		
+	
+	<!-- trueFalse layout -->
+	<div class="trueFalse">
+		<div class="ej_primary_label">
+			<span class="ej_uninvolved">Answer Choices</span>
+			<div id="tf_asf"><input id="tf_asf_ctrl" type="checkbox" onclick="tf_asf_toggle();">add separate feedback for each choice</div>
+		</div>
+	
+		<div id="tf_choices">
+			<table class="ui-state-default tf_choice_table">
+				<tr>
+					<td id="tf_trueLabel" class="tf_label ej_uninvolved">true</td>
+					<td class="tf_choice_controls">
+						<button id="tf_trueCorrect" class="tf_correctness tf_correct ej_uninvolved"></button>
+					</td>
+				</tr>
+				
+				<tr class="tf_asfeedback">
+					<td class="tf_asfeedback_wrapper" colspan="2">
+						<div class="ej_tertiary_label ej_uninvolved">feedback</div> 
+						<div class="ej_editable ej_common_feedback" id="tf_truefeedback"></div>	
+					</td>
+				</tr>
+			</table>
+		
+			<table class="ui-state-default tf_choice_table">
+				<tr>
+					<td id="tf_falseLabel" class="tf_label ej_uninvolved">false</td>
+					<td class="tf_choice_controls">
+						<button id="tf_falseCorrect" class="tf_correctness tf_incorrect ej_uninvolved"></button>
+					</td>
+				</tr>
+				
+				<tr class="tf_asfeedback">
+					<td class="tf_asfeedback_wrapper" colspan="2">
+						<div class="ej_tertiary_label ej_uninvolved">feedback</div>
+						<div class="ej_editable ej_common_feedback" id="tf_falsefeedback"></div>	
+					</td>
+				</tr>
+			</table>
+		</div>
+	
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for true or false)</span></div>
+		<div class="ej_editable ej_common_feedback" id="tf_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="tf_solution"></div>
+	
+		<div class="ej_primary_label ej_uninvolved">Follow-Up Question <span class="ej_aside">(unscored)</span></div>
+		<div class="ej_editable ej_common_feedback" id="tf_followupTag"></div>	
+	
+		<br>
+		<div class="ej_secondary_label ej_uninvolved">special character palette:
+			<select class="special_char_palette" id="tf_palette"></select>
+		</div>
+		
+	</div>
+	<!-- trueFalse layout -->
+	
+	
+	<!-- yesNo layout -->
+	<div class="yesNo">
+		<div class="ej_primary_label">
+			<span class="ej_uninvolved">Answer Choices</span> <span class="ej_aside">(required)</span>
+			<div id="yn_asf"><input id="yn_asf_ctrl" type="checkbox" onclick="yn_asf_toggle();">add separate feedback for each choice</div>
+		</div>
+	
+		<div id="yn_choices">
+			<table class="ui-state-default yn_choice_table">
+				<tr>
+					<td id="yn_yesLabel" class="yn_label ej_uninvolved">yes</td>
+					<td class="yn_choice_controls">
+						<button id="yn_yesCorrect" class="yn_correctness yn_correct ej_uninvolved"></button>
+					</td>
+				</tr>
+				
+				<tr class="yn_asfeedback">
+					<td class="yn_asfeedback_wrapper" colspan="2">
+						<div class="ej_tertiary_label ej_uninvolved">feedback</div> 
+						<div class="ej_editable ej_common_feedback" id="yn_yesfeedback"></div>	
+					</td>
+				</tr>
+			</table>
+		
+			<table class="ui-state-default yn_choice_table">
+				<tr>
+					<td id="yn_noLabel" class="yn_label ej_uninvolved">no</td>
+					<td class="yn_choice_controls">
+						<button id="yn_noCorrect" class="yn_correctness yn_incorrect ej_uninvolved"></button>
+					</td>
+				</tr>
+				
+				<tr class="yn_asfeedback">
+					<td class="yn_asfeedback_wrapper" colspan="2">
+						<div class="ej_tertiary_label ej_uninvolved">feedback</div>
+						<div class="ej_editable ej_common_feedback" id="yn_nofeedback"></div>	
+					</td>
+				</tr>
+			</table>
+		</div>
+	
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for yes or no)</span></div>
+		<div class="ej_editable ej_common_feedback" id="yn_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="yn_solution"></div>
+	
+		<div class="ej_primary_label ej_uninvolved">Follow-Up Question <span class="ej_aside">(unscored)</span></div>
+		<div class="ej_editable ej_common_feedback" id="yn_followupTag"></div>	
+	
+		<br>
+		<div class="ej_secondary_label ej_uninvolved">special character palette:
+			<select class="special_char_palette" id="yn_palette"></select>
+		</div>
+		
+	</div>
+	<!-- yesNo layout -->
+	
+	
+	<!-- sectionBreak layout -->
+	<div class="sectionBreak">
+		 <table class="ej_twoColumn">
+			 <tr>
+				<td>
+					<div class="ej_primary_label ej_uninvolved">Custom Question Type Title</div>
+					<input type="text" maxlength="100" class="ej_uninvolved" id="sb_custom_type" value=""/>
+				</td>
+				<td class="ej_twoColumn_help">
+					Instead of "Section Break", you can enter a title that describes more about your content.
+				</td>
+			</tr>
+		</table>
+		
+		<input type="checkbox" id="sb_popout" value="true"/>&nbsp;only display section break as a <a class="help_link" target="helpWindow" href="http://create.mcgraw-hill.com/wordpress-mu/success-academy/question-editor-section-break/?new_window=1">reference pop-out window</a>
+	</div>
+	<!-- sectionBreak layout -->
+	
+
+	<!-- survey -->	
+	<div class="survey">
+		<div class="ej_primary_label">
+			<span class="ej_uninvolved">Options</span>
+		</div>
+		
+		<ul id="sv_options" class="sortable">
+		
+		<li class="sv_option_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+			<table class="sv_option_table">
+				<tr>
+					<td class="ej_table_label sv_option_label ej_uninvolved">X</td>
+					<td>
+						<table class="sv_option_pair">
+							<tr>
+								<td>
+									<div class="ej_editable sv_distractor"></div>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td class="sv_option_control_cell">
+						<table>
+							<tr>
+								<td class="sv_option_controls">
+									<button class="sv_del_option_control ej_uninvolved"></button>
+								</td>
+							</tr>
+						</table>
+					</td>
+				</tr>
+			</table>
+		</li>
+		
+		</ul>
+		
+		<div id="sv_add_option">
+			<a class="ej_uninvolved" href="javascript:void(0);" name="addAnotherOption" onclick="sv_add_option();">+ add another option</a>
+		</div>
+		
+		<p>
+			<input type="checkbox" id="sv_suppressnum" value="true"/>&nbsp;hide option numbers (1., 2., 3., etc.)
+		</p>
+		
+		<p>
+			<input type="checkbox" id="sv_suppresstext" value="true"/>&nbsp;hide option text
+		</p>
+		
+		<p>
+			<input type="checkbox" id="sv_includena" value="true"/>&nbsp;include not applicable as an option
+		</p>
+		
+		<div class="ej_secondary_label ej_uninvolved">option layout:</div>
+		
+		<table class="layout_table" id="sv_layout_table">
+			<tr>
+				<td>
+					<div class="ej_uninvolved" id="sv_layout_vertical"></div>
+					vertical<br>
+					<input class="ej_uninvolved" type="radio" name="sv_layout" id="sv_layoutctrl_vertical" value="vertical"/>
+				</td>
+				<td>		
+					<div class="ej_uninvolved" id="sv_layout_horiz"></div>
+					horizontal<br>
+					<input class="ej_uninvolved" type="radio" name="sv_layout" id="sv_layoutctrl_horiz" value="horizontal"/>
+				</td>
+				<td>
+					<div class="ej_uninvolved" id="sv_layout_labeled">
+						<input id="sv_leftlabel" type="text" maxlength="40">
+						<input id="sv_rightlabel" type="text" maxlength="40">
+					</div>
+					horizontal with end labels<br>
+					<input class="ej_uninvolved" type="radio" name="sv_layout" id="sv_layoutctrl_labeled" value="horizontal with labels"/>
+				</td>
+			</tr>
+		</table>
+		
+		<br>
+		<div class="ej_secondary_label ej_uninvolved">special character palette:
+			<select class="special_char_palette" id="sv_palette"></select>
+		</div>
+		
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Follow-Up Question <span class="ej_aside">(unscored)</span></div>
+		<div class="ej_editable ej_common_feedback" id="sv_followupTag"></div>	
+	
+	</div>
+	<!-- survey layout -->
+
+	
+	
+	<!-- checkAll -->	
+	<div class="checkAll">
+		<div class="ej_primary_label">
+			<span class="ej_uninvolved">Answer Choices</span>
+			<div id="ca_asf"><input id="ca_asf_ctrl" type="checkbox" onclick="ca_asf_toggle();">add feedback per each choice</div>
+		</div>
+	
+		<ul id="ca_choices" class="sortable">		
+			<li class="ca_choice_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="ca_choice_table">
+					<tr>
+						<td class="ej_table_label ca_choice_label ej_uninvolved">X</td>
+						<td>
+							<table class="ca_choice_pair">
+								<tr><td>
+									<span class="ej_secondary_label ej_uninvolved">distractor</span>
+									<div class="ej_editable ca_distractor"></div>
+								</td></tr>
+								<tr class="ca_asfeedback"><td>
+									<span class="ej_secondary_label ej_uninvolved">feedback if checked</span>
+									<div class="ej_editable ca_feedback_ck"></div>
+								</td></tr>
+								<tr class="ca_asfeedback"><td>
+									<span class="ej_secondary_label ej_uninvolved">feedback if unchecked</span>
+									<div class="ej_editable ca_feedback_no"></div>
+								</td></tr>
+							</table>
+						</td>
+						<td class="ca_choice_control_cell">
+							<table>
+								<tr><td class="ca_choice_controls">
+									<button class="ca_cancheck ca_unchecked ej_uninvolved"></button>
+									<button class="ca_del_choice_control ej_uninvolved"></button>
+								</td></tr>
+							</table>
+						</td>
+					</tr>
+				</table>
+			</li>
+		</ul><!-- end sortable choices -->
+		
+		<!-- add new choice control -->
+		<div id="ca_add_choice">
+			<a class="ej_uninvolved" href="javascript:void(0);" name="addAnotherChoice" onclick="ca_add_choice();">+ add another choice</a>
+		</div>
+					
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for all choices)</span></div>
+		<div class="ej_editable ej_common_feedback" id="ca_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="ca_solution"></div>
+					
+	</div>
+	<!-- checkAll layout -->
+	
+
+	
+	<!-- fullBlank layout -->
+	<div class="fillBlank">
+		<div class="ej_primary_label">
+			<span class="ej_uninvolved">Correct Answers</span>
+		</div>
+	
+		<ul id="fb_choices" class="sortable">	
+			<li class="fb_choice_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="fb_choice_table"><tr>
+					<td class="ej_table_label fb_choice_label ej_uninvolved">X</td>
+					<td>
+						<input type="text" class="ej_uninvolved bordered_input fb_answer" maxlength="255"/>
+					</td>
+					<td class="fb_choice_control_cell">
+						<button class="fb_del_choice_control ej_uninvolved"></button>
+					</td>
+				</tr></table>
+			</li>
+		</ul>
+		
+		<div id="fb_add_choice">
+			<a class="ej_uninvolved" href="javascript:void(0);" onclick="fb_add_choice();">+ add another answer</a>
+		</div>
+	
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for all answers)</span></div>
+		<div class="ej_editable ej_common_feedback" id="fb_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved">Feedback If Correct</div>
+		<div class="ej_editable ej_common_feedback" id="fb_correctfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved">Feedback If Incorrect</div>
+		<div class="ej_editable ej_common_feedback" id="fb_incorrectfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="fb_solution"></div>
+			
+		<hr>
+	
+		<div class="ej_primary_label ej_uninvolved">Response Textbox Width</div>
+		<input type="text" id="fb_responsewidth" maxlength="4" />
+		
+		<div class="ej_primary_label ej_uninvolved">Response Formatting</div>
+		<table class="fb_textcontrols">
+			<tr class="fb_tc_dotted">
+				<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="fb_casesensitive">answers are case sensitive</td>
+				<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="fb_casesensitiveOR">ignore assignment policy</td>
+			</tr>
+			<tr class="fb_tc_dotted">
+				<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="fb_ignoreaccents">ignore accents</td>
+				<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="fb_ignoreaccentsOR">ignore assignment policy</td>
+			</tr>
+			<tr>
+				<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="fb_ignorespacing">ignore spacing and punctuation</td>
+				<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="fb_ignorespacingOR">ignore assignment policy</td>
+			</tr>
+		</table>
+		
+		<br>
+		<div class="ej_secondary_label ej_uninvolved">special character palette:
+			<select class="special_char_palette" id="fb_palette"></select>
+		</div>
+		
+	</div>
+	<!-- fillBlank layout -->
+	
+
+	
+	<!-- numeric layout -->
+	<div class="numeric">
+		<hr>
+		<div class="ej_primary_label"><span class="ej_uninvolved">Correct Answer / Formula</span></div>
+		<input type="text" id="nu_formula" />
+	
+		<div class="ej_primary_label ej_uninvolved">Response Textbox Width</div>
+		<input type="text" id="nu_responsewidth" maxlength="4" />
+		
+		<div class="ej_primary_label"><span class="ej_uninvolved">Precision / Tolerance</span></div>
+		<select id="nu_tolerance" onchange="nu_tolerance_change();">
+			<option value="-1">exact</option>
+			<option value="0">absolute</option>
+			<option value="1">percentage</option>
+		</select>
+		<span id="nu_precision_entry"> &plusmn; <input type="text" id="nu_precision" /></span>
+	
+		<div class="ej_primary_label"><span class="ej_uninvolved">Formatting Pattern <span class="ej_aside">(a little help)</span></span></div>
+		<input type="text" id="nu_formatString" />
+	
+		<div class="ej_primary_label"><span class="ej_uninvolved">Units <span class="ej_aside">(comma separated)</span></span></div>
+		<input type="text" id="nu_units_set" />
+	
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for all answers)</span></div>
+		<div class="ej_editable ej_common_feedback" id="nu_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved">Feedback If Correct</div>
+		<div class="ej_editable ej_common_feedback" id="nu_correctfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved">Feedback If Incorrect</div>
+		<div class="ej_editable ej_common_feedback" id="nu_incorrectfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="nu_solution"></div>
+	
+	</div>
+	<!-- numeric layout -->
+	
+
+	
+	<!-- shortAnswer layout -->
+	<div class="shortAnswer">
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for any answer)</span></div>
+		<div class="ej_editable ej_common_feedback" id="sa_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="sa_solution"></div>
+			
+		<hr>
+	
+		<div class="ej_primary_label ej_uninvolved">Response Textbox Width</div>
+		<input type="text" id="sa_responsewidth" maxlength="4" />
+		
+		<div class="ej_primary_label ej_uninvolved">Response Textbox Height</div>
+		<input type="text" id="sa_responseheight" maxlength="4" />
+		
+		<br>
+		<div class="ej_secondary_label ej_uninvolved">special character palette:
+			<select class="special_char_palette" id="sa_palette"></select>
+		</div>
+		
+	</div>
+	<!-- shortAnswer layout -->
+	
+		
+	<!-- essay layout -->
+	<div class="essay">
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for any answer)</span></div>
+		<div class="ej_editable ej_common_feedback" id="es_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="es_solution"></div>
+			
+		<hr>
+	
+		<div class="ej_primary_label ej_uninvolved">Response Textbox Width</div>
+		<input type="text" id="es_responsewidth" maxlength="4" />
+		
+		<div class="ej_primary_label ej_uninvolved">Response Textbox Height</div>
+		<input type="text" id="es_responseheight" maxlength="4" />
+		
+		<br>
+		<div class="ej_secondary_label ej_uninvolved">special character palette:
+			<select class="special_char_palette" id="es_palette"></select>
+		</div>
+		
+	</div>
+	<!-- essay layout -->
+
+		
+		
+	<!-- matching -->	
+	<div class="matching">
+		<div class="ej_primary_label">
+			<span class="ej_uninvolved">Matching Pairs</span>
+			<div id="ma_asf"><input class="ej_ininvolved" id="ma_asf_ctrl" type="checkbox" onclick="ma_asf_toggle();">add feedback per match</div>
+		</div>
+	
+		<ul id="ma_choices" class="sortable">
+			<li class="ma_choice_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="ma_choice_table"><tr>
+					<td class="ej_table_label ma_choice_label ej_uninvolved">X</td>
+					<td>
+						<table class="ma_choice_pair">
+							<tr>
+								<td>
+									<span class="ej_secondary_label ej_uninvolved">choice</span>
+									<div class="ej_editable ma_distractor"></div>
+									<br>
+									<span class="ej_secondary_label ej_uninvolved">match (optional)</span>
+									<div class="ej_editable ma_match"></div>
+									<br>
+								</td>
+							</tr>
+							<tr class="ma_asfeedback">
+								<td>
+									<span class="ej_secondary_label ej_uninvolved">correct match feedback</span>
+									<div class="ej_editable ma_feedback_ck"></div>
+									<br>
+									<span class="ej_secondary_label ej_uninvolved">incorrect match feedback</span>
+									<div class="ej_editable ma_feedback_unck"></div>
+									<br>
+								</td>
+							</tr>
+						</table>
+					</td>
+					<td class="ma_choice_control_cell">
+						<table><tr><td class="ma_choice_controls">
+							<button class="ma_del_choice_control ej_uninvolved"></button>
+						</td></tr></table>
+					</td>
+				</tr></table>
+			</li>
+		</ul><!-- end sortable choices -->
+			
+		<!-- add new choice control -->
+		<div id="ma_add_choice">
+			<a class="ej_uninvolved" href="javascript:void(0);" name="addAnotherChoice" onclick="ma_add_choice();">+ add another pair</a>
+		</div>		
+	
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for all answers)</span></div>
+		<div class="ej_editable ej_common_feedback" id="ma_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="ma_solution"></div>
+						
+	</div>
+	<!-- matching layout -->
+
+	
+	
+	<!-- ranking -->	
+	<div class="ranking">
+		<div class="ej_primary_label">
+			<span class="ej_uninvolved">Items Ranked In Order</span>
+		</div>
+	
+		<ul id="ra_choices" class="sortable">
+			<li class="ra_choice_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="ra_choice_table"><tr>
+					<td class="ej_table_label ra_choice_label ej_uninvolved">X</td>
+					<td>
+						<table class="ra_choice_pair">
+							<tr><td>
+								<span class="ej_secondary_label ej_uninvolved">distractor</span>
+								<div class="ej_editable ra_distractor"></div>
+							</td></tr>
+						</table>
+					</td>
+					<td class="ra_choice_control_cell">
+						<table><tr><td class="ra_choice_controls">
+							<button class="ra_del_choice_control ej_uninvolved"></button>
+						</td></tr></table>
+					</td>
+				</tr></table>
+			</li>
+		</ul><!-- end sortable choices -->
+		
+		<!-- add new choice control -->
+		<div id="ra_add_choice">
+			<a class="ej_uninvolved" href="javascript:void(0);" name="addAnotherChoice" onclick="ra_add_choice();">+ add another item</a>
+		</div>
+		
+		<hr>
+		
+		<div class="ej_primary_label ej_uninvolved">Common Feedback <span class="ej_aside">(default for all rankings)</span></div>
+		<div class="ej_editable ej_common_feedback" id="ra_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved">Feedback If Correct</div>
+		<div class="ej_editable ej_common_feedback" id="ra_correctfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved">Feedback If Incorrect</div>
+		<div class="ej_editable ej_common_feedback" id="ra_incorrectfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="ra_solution"></div>
+					
+	</div>
+	<!-- ranking layout -->
+	
+	
+	<!-- fileAttachment layout -->
+	<div class="fileAttachment">
+		
+		<textarea autocomplete="off" spellcheck="false" name="fa_frame_state" id="fa_frame_state"></textarea>
+		<input type="hidden" name="fa_frame_eval" id="fa_frame_eval" value="">
+		<input type="hidden" name="fa_frame_mode" id="fa_frame_mode" value="design">
+		<input type="hidden" name="fa_frame_instanceid" id="fa_frame_instanceid" value="designer">
+		
+		<iframe class="wk_ex_iframe" style="z-index: 1;" name="fa_frame" id="fa_frame" src="" frameborder="0"></iframe>
+				
+	</div>
+	<!-- fileAttachment layout -->
+	
+	
+
+	
+	<!-- lsi layout -->
+	<div class="lsi">
+		
+		<form name="ls_form" id="ls_form" target="lsiEdit" action="" onsubmit="return(false);">
+			<button type="button" title="edit question definition" id="ls_edit_button" onclick="ls_edit();">Math + Science Editor</button>
+			
+			<input type="hidden" name="id" value="850acf7b9a51022f21a5939acdf8c9e8">
+			<input type="hidden" name="viewer_style" value="2">
+			<input type="hidden" name="viewer_width" value="750">
+			
+			<input type="hidden" name="uid" class="ls_uid" value="">
+			<input type="hidden" name="cid" class="ls_cid" value="">
+			<input type="hidden" name="writeid" id="ls_writeid" value="">
+			<input type="hidden" name="probid" id="ls_probid" value="">
+		</form>
+	
+		<form name="ls_ezform" id="ls_ezform" target="ls_update" action="/hm.tpx" onsubmit="return(false);">
+			<input type="hidden" name="todo" value="customQuestionUpdate">
+	
+			<input type="hidden" name="customQuestionUID" class="ls_uid" value="">
+			<input type="hidden" name="customQuestionCID" class="ls_cid" value="">
+			<input type="hidden" name="customQuestionID" id="ls_id" value="">
+			
+			<input type="hidden" name="ezid" id="ls_ezid" value="">
+			<input type="hidden" name="qid" id="ls_qid" value="">
+		</form>
+		<iframe name="ls_update" width="1" height="1" marginwidth="0" marginheight="0" frameborder="0" border="0" scrolling="no" src=""></iframe>					
+	
+	</div>
+	<!-- lsi layout -->
+	
+
+	
+	<!-- worksheet layout -->
+	<div class="worksheet">
+		
+		<div class="ej_primary_label ej_uninvolved">Explanation</span></div>
+		<div class="ej_editable ej_common_feedback" id="wk_commonfeedback"></div>	
+		
+		<div class="ej_primary_label ej_uninvolved" style="margin-top: 20px;">Solution</div>
+		<div class="ej_editable ej_solution" id="wk_solution"></div>
+		
+		<div class="ej_primary_label ej_uninvolved">Custom Question Type Title
+			<div class="ej_assistive">
+				Instead of "Worksheet," you can enter a title that describes more about your content.
+			</div>
+		</div>
+		<input type="text" id="wk_customType" maxlength="80" />
+		
+	</div>
+	<!-- worksheet layout -->
+	
+
+	<!-- div class="notSurvey"-->
+	<div>
+		<hr>
+		<div class="ej_primary_label ej_uninvolved">Instructor Info
+			<div class="ej_assistive">
+				Enter information an instructor needs to know before assigning this question to students.
+				<a class="help_link" target="helpWindow" href="http://create.mcgraw-hill.com/wordpress-mu/success-academy/question-editor-instructor-info/?new_window=1">Learn more</a><br>&nbsp;
+			</div>
+		</div>
+		<textarea class="ej_info" id="instructor_info"></textarea>
+	</div>
+
+	<div id="hintsEditing">
+		<hr>
+		<div class="ej_primary_label ej_uninvolved">Hints</div>
+		<ul id="hints" class="sortable">
+			
+			<li class="ui-state-default hint_item"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+			<table class="hint_table"><tr>
+				<td class="ej_table_label hint_label ej_uninvolved">1</td>
+				<td>
+					<div class="ej_editable hint" id="hint_1"></div>
+				</td>
+				<td class="hint_control_cell">
+					<table><tr><td class="hint_controls">
+						<button class="del_hint_control ej_uninvolved"></button>
+					</td></tr></table>
+				</td>
+			</tr></table></li>
+
+			<li class="hint_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+			<table class="hint_table"><tr>
+				<td class="ej_table_label hint_label ej_uninvolved">X</td>
+				<td>
+					<div class="ej_editable hint"></div>
+				</td>
+				<td class="hint_control_cell">
+					<table><tr><td class="hint_controls">
+						<button class="del_hint_control ej_uninvolved"></button>
+					</td></tr></table>
+				</td>
+			</tr></table></li>
+
+		</ul><!-- end sortable hints -->
+		
+		<div id="hint_add">
+			<a class="ej_uninvolved" href="javascript:void(0);" name="addAnotherHint" onclick="hint_add();">+ add another hint</a>
+		</div>
+	</div>
+		
+	<!-- div class="notSurvey"-->
+	<div id="tipsEditing">
+		<hr>
+		<div class="ej_primary_label ej_uninvolved">Content Tooltips
+			<div class="ej_assistive">
+				Use <span class="tooltip-anchor" id="Q_editor_anchor-1">tooltips</span><div style="display: none;" class="tooltip-content" id="Q_editor_content-1">This is an example tooltip that can display when a student clicks on a word that appears in a question.</div> to display glossary terms and short pieces of information/media with question content.
+				<a class="help_link" target="helpWindow" href="http://create.mcgraw-hill.com/wordpress-mu/success-academy/question-editor-content-tooltips/?new_window=1">Learn more</a>
+			</div>
+		</div>
+		<ul id="tips" class="sortable">
+			
+			<li class="ui-state-default tip_item"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+			<table class="tip_table"><tr>
+				<td class="ej_table_label tip_label ej_uninvolved">1</td>
+				<td>
+					<div class="ej_editable tip" id="tip_1"></div>
+				</td>
+				<td class="tip_control_cell">
+					<table><tr><td class="tip_controls">
+						<button class="del_tip_control ej_uninvolved"></button>
+					</td></tr></table>
+				</td>
+			</tr></table></li>
+
+			<li class="tip_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+			<table class="tip_table"><tr>
+				<td class="ej_table_label tip_label ej_uninvolved">X</td>
+				<td>
+					<div class="ej_editable tip"></div>
+				</td>
+				<td class="tip_control_cell">
+					<table><tr><td class="tip_controls">
+						<button class="del_tip_control ej_uninvolved"></button>
+					</td></tr></table>
+				</td>
+			</tr></table></li>
+
+		</ul><!-- end sortable hints -->
+		
+		<div id="tip_add">
+			<a class="ej_uninvolved" href="javascript:void(0);" name="addAnotherTip" onclick="tip_add();">+ add another tooltip</a>
+		</div>
+	</div>
+		
+	<div class="sectionBreak">
+		<div class="ej_primary_label ej_uninvolved"><hr>Survey Question Headings</div>
+			<div class="ej_assistive">
+				Add column headings for each column that contains a choice in survey questions.
+				<a class="help_link" target="helpWindow" href="http://create.mcgraw-hill.com/wordpress-mu/success-academy/question-editor-survey-question-heading/?new_window=1">Learn more</a><br>&nbsp;
+			</div>
+			<ul id="sb_headings" class="sortable">
+				
+				<li class="ui-state-default sb_heading"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="sb_heading_table"><tr>
+					<td class="ej_table_label sb_heading_label ej_uninvolved">1</td>
+					<td>
+						<div class="ej_editable sb_heading_content" id="sb_heading_1"></div>
+					</td>
+					<td class="sb_heading_control_cell">
+						<table><tr><td class="sb_heading_controls">
+							<button class="sb_del_heading_control ej_uninvolved"></button>
+						</td></tr></table>
+					</td>
+				</tr></table></li>
+	
+				<li class="sb_heading_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="sb_heading_table"><tr>
+					<td class="ej_table_label sb_heading_label ej_uninvolved">X</td>
+					<td>
+						<div class="ej_editable sb_heading_content"></div>
+					</td>
+					<td class="sb_heading_control_cell">
+						<table><tr><td class="sb_heading_controls">
+							<button class="sb_del_heading_control ej_uninvolved"></button>
+						</td></tr></table>
+					</td>
+				</tr></table></li>
+	
+			</ul><!-- end sortable sb_heading's -->
+			
+			<div id="sb_heading_add">
+				<a class="ej_uninvolved" href="javascript:void(0);" name="addAnotherSBHeading" onclick="sb_add_heading();">+ add another heading</a>
+			</div>
+		</div>
+		
+	</div>
+
+</div><!-- end question tab -->
+
+
+<!-- basic tab -->
+<div id="detailsView">
+
+	<div id="basic_tab" class="details_tab">
+		<ul>
+			<li><a class="ej_uninvolved" href="#basicView">Basic</a></li>
+		</ul>
+	
+		<div id="basicView" class="ej_detail">
+			 <div class="ej_secondary_label">Related Textbook Page(s)</div>
+			 <table class="ej_twoColumn"><tr>
+				<td>
+					<input type="text" maxlength="64" class="ej_page" id="pageTag" value=""/>
+				</td>
+				<td class="ej_twoColumn_help">
+					Textbook pages students can use as a study reference.
+				</td>
+			</tr></table>
+		 
+		 	<div class="multipleChoice">
+		 		<div id="mc_grading_ctrl">
+					 <div class="ej_secondary_label">Grading</div>
+					 <table class="ej_twoColumn"><tr>
+						<td>
+							<select class="ej_select" id="mc_grading">
+								<option value="automatic">automatically scored</option>
+								<option value="partial">partially automatic scoring</option>
+								<option value="manual">manually scored</option>						
+							</select>
+						</td>
+						<td class="ej_twoColumn_help">
+							Connect can automatically grade this question.
+						</td>
+					</tr></table>
+				</div>
+	
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="mc_scoring" onclick="mc_scoring();">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						There's no wrong answer.
+					</td>
+				</tr></table>
+		 	</div>
+		 	
+		 	<div class="trueFalse">
+				 <div class="ej_secondary_label">Grading</div>
+				 <table class="ej_twoColumn"><tr>
+					<td>
+						<select class="ej_select" id="tf_grading">
+							<option value="automatic">automatically scored</option>
+							<option value="partial">partially automatic scoring</option>
+							<option value="manual">manually scored</option>						
+						</select>
+					</td>
+					<td class="ej_twoColumn_help">
+						Connect can automatically grade this question.
+					</td>
+				</tr></table>
+		 	</div>
+		 	
+		 	<div class="yesNo">
+				 <div class="ej_secondary_label">Grading</div>
+				 <table class="ej_twoColumn"><tr>
+					<td>
+						<select class="ej_select" id="yn_grading">
+							<option value="automatic">automatically scored</option>
+							<option value="partial">partially automatic scoring</option>
+							<option value="manual">manually scored</option>						
+						</select>
+					</td>
+					<td class="ej_twoColumn_help">
+						Connect can automatically grade this question.
+					</td>
+				</tr></table>
+		 	</div>
+		 	
+		 	<div class="checkAll">
+		 		<div id="ca_grading_ctrl">
+					 <div class="ej_secondary_label">Grading</div>
+					 <table class="ej_twoColumn"><tr>
+						<td>
+							<select class="ej_select" id="ca_grading">
+								<option value="partial credit scoring">partial credit awarded</option>
+								<option value="all or nothing scoring">all or nothing credit</option>
+								<option value="locked partial credit scoring">only partial credit awarded</option>
+								<option value="locked all or nothing scoring">only all or nothing credit</option>
+							</select>
+						</td>
+						<td class="ej_twoColumn_help">
+							Connect can automatically grade this question.
+						</td>
+					</tr></table>
+				</div>
+				
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="ca_scoring" onclick="ca_scoring();">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						There's no wrong answer.
+					</td>
+				</tr></table>
+		 	</div>
+		 	
+		 	<div class="fillBlank">
+		 		<div id="fb_grading_ctrl">
+					 <div class="ej_secondary_label">Grading</div>
+					 <table class="ej_twoColumn"><tr>
+						<td>
+							<select class="ej_select" id="fb_grading">
+								<option value="automatic">automatically scored</option>
+								<option value="partial">partially automatic scoring</option>
+								<option value="manual">manually scored</option>						
+							</select>
+						</td>
+						<td class="ej_twoColumn_help">
+							Connect can automatically grade this question.
+						</td>
+					</tr></table>
+				</div>
+				
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="fb_scoring" onclick="fb_scoring();">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						There's no wrong answer.
+					</td>
+				</tr></table>
+		 	</div>
+		 	
+		 	<div class="numeric">
+		 		<div id="nu_grading_ctrl">
+					 <div class="ej_secondary_label">Grading</div>
+					 <table class="ej_twoColumn"><tr>
+						<td>
+							<select class="ej_select" id="nu_grading">
+								<option value="automatic">automatically scored</option>
+								<option value="partial">partially automatic scoring</option>
+								<option value="manual">manually scored</option>						
+							</select>
+						</td>
+						<td class="ej_twoColumn_help">
+							Connect can automatically grade this question.
+						</td>
+					</tr></table>
+				</div>
+				
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="nu_scoring" onclick="nu_scoring();">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						There's no wrong answer.
+					</td>
+				</tr></table>
+		 	</div>
+
+		 	<div class="shortAnswer">				
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="sa_scoring">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						Connect cannot automatically grade this question.
+					</td>
+				</tr></table>
+				<div class="ej_secondary_label">Grading by Parts</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="sa_aggregated_grading">Support grading by parts</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						Support Grading by Parts
+					</td>
+				</tr></table>
+			    </div>
+
+		 	<div class="essay">				
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="es_scoring">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						There's no wrong answer.
+					</td>
+				</tr></table>
+				<div class="ej_secondary_label">Grading by Parts</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="es_aggregated_grading">Support grading by parts</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						Support grading by parts
+					</td>
+				</tr></table>				
+				</div>
+
+		 	<div class="matching">
+		 		<div id="ma_grading_ctrl">
+					 <div class="ej_secondary_label">Grading</div>
+					 <table class="ej_twoColumn"><tr>
+						<td>
+							<select class="ej_select" id="ma_grading">
+								<option value="automatic">automatically scored</option>
+								<option value="partial">partially automatic scoring</option>
+								<option value="manual">manually scored</option>						
+							</select>
+						</td>
+						<td class="ej_twoColumn_help">
+							Connect can automatically grade this question.
+						</td>
+					</tr></table>
+				</div>
+				
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="ma_scoring" onclick="ma_scoring();">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						There's no wrong answer.
+					</td>
+				</tr></table>
+		 	</div>
+
+		 	<div class="ranking">
+		 		<div id="ra_grading_ctrl">
+					 <div class="ej_secondary_label">Grading</div>
+					 <table class="ej_twoColumn"><tr>
+						<td>
+							<select class="ej_select" id="ra_grading">
+								<option value="automatic">automatically scored</option>
+								<option value="partial">partially automatic scoring</option>
+								<option value="manual">manually scored</option>						
+							</select>
+						</td>
+						<td class="ej_twoColumn_help">
+							Connect can automatically grade this question.
+						</td>
+					</tr></table>
+				</div>
+				
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="ra_scoring" onclick="ra_scoring();">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						There's no wrong answer.
+					</td>
+				</tr></table>
+		 	</div>
+		 	
+		 	<div class="worksheet">
+		 		<div id="wk_grading_ctrl">
+					 <div class="ej_secondary_label">Grading</div>
+					 <table class="ej_twoColumn"><tr>
+						<td>
+							<select class="ej_select" id="wk_grading">
+								<option value="automatic">automatically scored</option>
+								<option value="partial">partially automatic scoring</option>
+								<option value="manual">manually scored</option>						
+							</select>
+						</td>
+						<td class="ej_twoColumn_help">
+							Connect can automatically grade this question.
+						</td>
+					</tr></table>
+				</div>
+				
+				<div class="ej_secondary_label">Scoring Method</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="wk_scoring" onclick="wk_scoring();">accept any answer as correct</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						There's no wrong answer.
+					</td>
+				</tr></table>
+				<div class="ej_secondary_label">Grading by Parts</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="wk_aggregated_grading">Support grading by parts</input>
+					</td>
+					<td class="ej_twoColumn_help">
+						Support grading by parts
+					</td>
+				</tr></table>
+		 	</div>
+
+		</div>
+	</div>
+		
+	<div id="multipart_tab" class="details_tab">
+		<ul>
+			<li><a class="ej_uninvolved" href="#multipartView">Multipart Question Info</a></li>
+		</ul>
+	
+		<div id="multipartView" class="ej_detail">
+
+			<div class="multipart_select notSectionBreak">
+				<div class="ej_secondary_label">Tie to Section Break</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<select class="ej_select" id="tie_to_reference">
+							<option value="101010">Question #5 Required Information</option>
+							<option value="202020">Question #6 Required Information</option>						
+						</select>
+					</td>
+					<td class="ej_twoColumn_help">
+						Associate this with a section break to make it a multipart question.
+					</td>
+				</tr></table>
+			</div>
+		 
+			<div class="sectionBreak">
+				<div class="ej_secondary_label">Define Multipart Question</div>
+				<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="use_asreference" value="99999" onclick="sb_mp_toggle();" />&nbsp;use this section break with a multipart question
+					</td>
+					<td class="ej_twoColumn_help">
+						<!-- Help text never delivered by UX.-->
+					</td>
+				</tr></table>
+				
+				<div id="sb_display">
+					<table class="ej_twoColumn"><tr>
+					<td>
+						<input type="checkbox" id="suppress_popup_Control" value="99999" />&nbsp;suppress floating popup view
+					</td>
+					<td class="ej_twoColumn_help">
+						<!-- Help text never delivered by UX.-->
+					</td>
+				</tr></table>
+					<div class="ej_secondary_label" id="sb_display_style">Multipart Display Style</div>
+					<table class="sb_layout" id="sb_layout_table">
+						<tr>
+							<td>
+								<div id="sb_layout_normal"></div>
+								all at once<br>student answers all parts on one page<br>
+								<input type="radio" name="sb_layout" id="sb_layoutctrl_none" value="none" />
+							</td>
+							<td>
+								<div id="sb_layout_oneway"></div>
+								restricted one way<br>student must answer each part <b>in order</b><br>
+								<input type="radio" name="sb_layout" id="sb_layoutctrl_oneway" value="oneway" />
+							</td>
+							<td>
+								<div id="sb_layout_twoway"></div>
+								unrestricted two way<br>student can answer parts in <b>any order</b><br>
+								<input type="radio" name="sb_layout" id="sb_layoutctrl_twoway" value="twoway" />
+							</td>
+						</tr>
+					</table>
+				</div>
+			</div>
+			
+		</div>
+	</div>	
+		
+	<div id="link_tab" class="details_tab">
+		<ul>
+			<li><a class="ej_uninvolved" href="#linksView">ebook & Resource Links</a></li>
+		</ul>
+	
+		<div id="linksView" class="ej_detail">
+
+			<ul id="content_links" class="sortable content_links">
+				
+				<li class="ui-state-default link_item"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="link_table"><tr>
+					<td class="ej_table_label link_label">1</td>
+					<td class="link_entry">
+					
+						<div class="ej_tertiary_label">Link Title</div>
+						<table class="ej_twoColumn"><tr>
+							<td>
+								<input type="text" maxlength="255" class="link_title" value="eBook"/>
+							</td>
+							<td class="ej_twoColumn_help">
+								Add links to various study resources for students.
+							</td>
+						</tr></table>
+						
+						<div class="ej_tertiary_label">Web Address or Link</div>
+						<table class="ej_twoColumn"><tr>
+							<td>
+								<input type="text" maxlength="255" class="link_address" value="http://www.apple.com/"/>
+							</td>
+							<td class="ej_twoColumn_help">
+								<!-- Help text never delivered by UX.-->
+							</td>
+						</tr></table>
+						
+						<div class="ej_tertiary_label">Type</div>
+						<table class="ej_twoColumn"><tr>
+							<td>
+								<select class="ej_select ej_link_type">
+									<option value="ebook">Novella ebook</option>
+									<option value="textflow">TextFlow reading</option>
+									<option value="textflow_vid">TextFlow video</option>
+									<option value="textflow_img">TextFlow image</option>
+									<!--option value="qsi_tutor">qsi tutor</option-->
+									<option value="tutorial">tutorial</option>
+									<option value="lecture">Tegrity lecture</option>
+									<option value="document">document</option>
+									<option value="policy">policy controlled link</option>
+								</select>
+							</td>
+							<td class="ej_twoColumn_help">
+								<!-- Help text never delivered by UX.-->
+							</td>
+						</tr></table>
+
+						<div class="policy_ctrl">
+							<div class="ej_tertiary_label">Policy for Policy-Controlled Links</div>
+							<table class="ej_twoColumn"><tr>
+								<td>
+									<select class="ej_select ej_link_policy">
+										<option value="">n/a</option>
+										<option value="p_bilbo">Bilbo Baggins</option>
+										<option value="p_frodo">Frodo Baggins</option>
+									</select>
+								</td>
+								<td class="ej_twoColumn_help">
+									<!-- Help text never delivered by UX.-->
+								</td>
+							</tr></table>
+						</div>
+
+					</td>
+					<td class="link_control_cell">
+						<table><tr><td class="link_controls">
+							<button class="del_link_control"></button>
+						</td></tr></table>
+					</td>
+				</tr></table></li>
+	
+				<li class="link_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="link_table"><tr>
+					<td class="ej_table_label link_label">X</td>
+					<td class="link_entry">
+
+						<div class="ej_tertiary_label">Link Title</div>
+						<table class="ej_twoColumn"><tr>
+							<td>
+								<input type="text" maxlength="255" class="link_title" value=""/>
+							</td>
+							<td class="ej_twoColumn_help">
+								Add links to various study resources for students.
+							</td>
+						</tr></table>
+						
+						<div class="ej_tertiary_label">Web Address or Link</div>
+						<table class="ej_twoColumn"><tr>
+							<td>
+								<input type="text" maxlength="255" class="link_address" value=""/>
+							</td>
+							<td class="ej_twoColumn_help">
+									<!-- Help text never delivered by UX.-->
+							</td>
+						</tr></table>
+						
+						<div class="ej_tertiary_label">Type</div>
+						<table class="ej_twoColumn"><tr>
+							<td>
+								<select class="ej_select ej_link_type" onchange="links_policy();">
+									<option value="ebook">Novella ebook</option>
+									<option value="textflow">TextFlow reading</option>
+									<option value="textflow_vid">TextFlow video</option>
+									<option value="textflow_img">TextFlow image</option>
+									<!--option value="qsi_tutor">qsi tutor</option-->
+									<option value="tutorial">tutorial</option>
+									<option value="lecture">Tegrity lecture</option>
+									<option value="document">document</option>
+									<option value="policy">policy controlled link</option>
+								</select>
+							</td>
+							<td class="ej_twoColumn_help">
+									<!-- Help text never delivered by UX.-->
+							</td>
+						</tr></table>
+
+						<div class="policy_ctrl">
+							<div class="ej_tertiary_label">Policy for Policy-Controlled Links</div>
+							<table class="ej_twoColumn"><tr>
+								<td>
+									<select class="ej_select ej_link_policy">
+										<option value="">n/a</option>
+									</select>
+								</td>
+								<td class="ej_twoColumn_help">
+									<!-- Help text never delivered by UX.-->
+								</td>
+							</tr></table>
+						</div>
+
+					</td>
+					<td class="link_control_cell">
+						<table><tr><td class="link_controls">
+							<button class="del_link_control"></button>
+						</td></tr></table>
+					</td>
+				</tr></table></li>
+	
+			</ul><!-- end sortable content links -->
+		 
+			<div id="link_add">
+				<a href="javascript:void(0);" id="addAnotherLink" onclick="link_add();">+ add another link</a>
+			</div>
+	
+		</div>
+	</div>
+
+
+	<div id="print_tab" class="details_tab">
+		<ul>
+			<li><a class="ej_uninvolved" href="#printView">Print Formatting*</a></li>
+		</ul>
+	
+		<div id="printView" class="ej_detail">
+
+
+			<table class="ej_twoColumn"><tr>
+				<td>
+					<input type="checkbox" id="long_question" value="true"/>&nbsp;this question will exceed the length of a printed page
+				</td>
+				<td class="ej_twoColumn_help">
+						<!-- Help text never delivered by UX.-->
+				</td>
+			</tr></table>
+
+		</div>
+	</div>
+	
+</div><!-- end basics tab -->
+
+
+<div id="variablesView">
+	<div name="randoms_frame" id="randoms_frame" ></div>
+</div><!-- end variables tab -->
+
+<div id="categoriesView"><center>
+	<div id="cats_create" class="save_enabled">
+		Enter new category title:
+		<select id="cat_groups"><option selected value="">none</option></select>
+		<input type="text" id="cat_create" size="60" maxsize="250" value="">
+		<button id="cat_create_button" onclick="cat_create();">New</button>
+	</div>
+	<table id="cats_table">
+		<tr id="cats_header">
+			<th>&nbsp;</th>
+			<th>Title</th>
+			<th class="save_enabled">&nbsp;</th>
+		</tr>
+	
+	</table>
+</center></div><!-- end categories tab -->
+
+
+
+<div id="mediaView">
+
+	<div id="media_upload" class="save_enabled">
+		<iframe id="mediaDestination" name="mediaDestination" src=""></iframe>
+		<form enctype="multipart/form-data" id="media_uploader" name="media_uploader" target="mediaDestination" method="post" onsubmit="return false;" action="">
+			<input type="file" id="upload_file" name="upload_file">
+			<button id="media_upload_button" onclick="media_upload();">Upload</button>
+		</form>
+	</div>
+	<table id="media_table">
+		<tr id="media_header">
+			<th>&nbsp;</th>
+			<th style="text-align: left">Title</th>
+			<th>Size</th>
+			<th>Player Dimensions (w x h)</th>
+			<th>Used in</th>
+			<th>Type</th>
+			<th class="save_enabled">&nbsp;</th>
+		</tr>
+	
+	</table>
+	
+</div><!-- end media tab -->
+
+
+<div class="worksheet" id="worksheetAnswerView">
+
+	<div id="wk_wa_create" >
+		<button id="wa_new" onclick="wa_newanswer();"></button><br>&nbsp;
+		<div id="wa_newanswermenu" style="display: none;">
+			<a href="javascript:void(0);" onclick="wa_start('AV');">a/v record</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('CA');">check all that apply</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('EX');">external content tool</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('LV');">labeled value group</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('SP');">learning object</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('LC');">list completion</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('MC');">multiple choice</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('NU');">numeric response</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('FB');">fill in the blank</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('TF');">true / false</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('UE');">essay</a><br>
+			<a href="javascript:void(0);" onclick="wa_start('VV');">video voiceover</a><br>
+		</div>
+	</div>
+	<table id="wa_table">
+		<thead>
+			<tr id="wa_header">
+				<th>&nbsp;</th>
+				<th style="text-align: left"><a href="javascript:void(0)" onclick="wa_sort();" id="wa_sort_button">Title</a></th>
+				<th>Type</th>
+				<th>Weight<span id="wa_weightsum"></span></th>
+				<th>&nbsp;</th>
+			</tr>
+		</thead>
+		<tbody id="wa_table_body"></tbody>
+	</table>
+	
+	<div id="wk_wa_editor">
+	
+		<div id="wk_wa_edit_loading">
+			loading...
+		</div>
+		
+		<div id="wk_wa_edit_header">
+			<table id="wa_edit_header_table">
+				<tr>
+					<td style="text-align: left;">
+						<button id="wa_revert" onclick="wa_revert();">Revert</button>
+						<button id="wa_exit" onclick="wa_exit();">Exit</button>
+					</td>
+					<td style="text-align: right;">
+						<button id="wa_save" onclick="wa_save(null);">Save Answer</button>
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		<div class="wa_editor" id="wk_wa_edit_av">
+
+			<p>
+				<div class="ej_primary_label">Correct Answer Audio Link</div>
+				<input class="bordered_input" type="text" maxlength="500" value="" id="wa_av_alink"></input>
+			</p>
+			
+			<p>
+				<div class="ej_primary_label">Maximum Recording Duration</div>
+				<select id="wa_av_duration">
+					<option selected value="6">6 seconds</option>
+					<option value="30">30 seconds</option>
+					<option value="60">60 seconds</option>
+					<option value="120">120 seconds</option>
+				</select>&nbsp;
+			</p>
+
+			<br><div id="wa_av_layout_title" class="ej_secondary_label">Audio Recorder Orientation</div>
+			<table class="layout_table" id="wa_av_layout_table">
+				<tr>
+					<td>
+						<div id="wa_av_layout_horiz"></div>
+						horizontal<br>
+						<input type="radio" name="wa_av_layout" id="wa_av_preso_h" value="horizontal"/>
+					</td>
+					<td>
+						<div id="wa_av_layout_vertical"></div>
+						vertical<br>
+						<input type="radio" name="wa_av_layout" id="wa_av_preso_v" value="vertical"/>
+					</td>
+				</tr>
+			</table><br>
+
+			<div class="wa_scoring">
+				<input type="checkbox" value="true" id="wa_av_acceptany">accept any answer as correct</input>
+			</div>
+
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_ca">
+
+			<div class="ej_primary_label">Answer Choices</div>
+		
+			<ul id="wa_ca_choices" class="sortable">
+				
+				<li class="wa_ca_choice_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="wa_ca_choice_table"><tr>
+					<td class="ej_table_label wa_ca_choice_label">X</td>
+					<td class="wa_ca_choice_cell">
+						<input class="bordered_input wa_ca_distractor" maxlength="255"></input>
+					</td>
+					<td class="wa_ca_choice_controls">
+						<button class="wa_ca_tog_choice"></button>
+						<button class="wa_ca_del_choice_control"></button>
+					</td>
+				</tr></table></li>
+	
+			</ul><!-- end sortable choices -->
+			
+			<!-- add new choice control -->
+			<div id="wa_ca_add_choice">
+				<a href="javascript:void(0);" onclick="wa_ca_add_choice();">+ add another choice</a>
+			</div>		
+			
+			<div class="ej_secondary_label">choice layout:</div>
+			<table class="layout_table" id="wa_ca_layout_table">
+				<tr>
+					<td>
+						<div class="mc_layout_vertical"></div>
+						Vertical<br>
+						<input type="radio" name="wa_ca_layout" id="wa_ca_preso_v" value="vertical"/>
+					</td>
+					<td>
+						<div class="mc_layout_horiz"></div>
+						Horizontal<br>
+						<input type="radio" name="wa_ca_layout" id="wa_ca_preso_h" value="horizontal"/>
+					</td>
+					<td>
+						<div class="mc_layout_twocol"></div>
+						Two Column<br>
+						<input type="radio" name="wa_ca_layout" id="wa_ca_preso_tc" value="two_column"/>
+					</td>
+				</tr>
+			</table>
+				
+			<div class="wa_scoring">
+				<br></br><input type="checkbox" value="true" id="wa_ca_scramble">scramble choices</input>
+
+				<br></br>width: <input type="text" maxlength="3" size="4" value="" id="wa_ca_width"></input> pixels
+
+				<br></br><input type="checkbox" value="true" id="wa_ca_acceptany">accept any answer as correct</input>
+			</div>
+
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_ex">
+
+			<table id="wa_ex_size_table">
+				<tr>
+					<td>
+						<span class="ej_secondary_label">Presentation Size</span><br>
+						<table><tr>
+							<td class="wa_ex_size_cell">
+								Width<br>
+								<input type="text" maxlength="4" value="" class="wa_ex_size" id="wa_ex_width"></input>
+							</td>
+							<td class="wa_ex_size_cell">
+								Height<br>
+								<input type="text" maxlength="4" value="" class="wa_ex_size" id="wa_ex_height"></input>
+							</td>
+						</tr></table>
+						<button onclick="wa_ex_copy_sizes();">Copy sizes and refresh...</button>
+					</td>
+					<td id="wa_ex_tool_cell">
+						<span class="ej_secondary_label">Selected Tool</span><br>
+						<select id="wa_ex_typelist" onchange="wa_ex_toolchange();">
+							<option value="">select or enter a tool identifier below</option>
+						</select>
+						<br><input type="text" maxlength="500" value="" id="wa_ex_url" onchange="wa_ex_complete_urlchange();"></input>
+						<div class="ej_secondary_label">special character palette:
+							<select class="special_char_palette" id="wa_ex_palette"></select>
+						</div>
+					</td>
+					<td id="wa_ex_scoring_cell">
+						<div id="wa_ex_scoring_wrapper">
+							<span class="ej_secondary_label">Scoring Method</span><br>
+							<input type="checkbox" value="true" id="wa_ex_acceptany">accept any answer as correct</input><br>
+							<span class="ej_secondary_label">Custom Type</span><br>
+							<input type="text" maxlength="80" value="" id="wa_ex_customtype"></input>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<div id="wa_ex_controls">
+
+				<table id="wa_ex_control_table">
+					<tr>
+						<td>
+							<span class="ej_secondary_label">Rendering Size</span><br>
+							<table><tr>
+								<td class="wa_ex_size_cell">
+									Width<br>
+									<input type="text" maxlength="4" value="" class="wa_ex_size" id="wa_ex_framewidth"></input>
+								</td>
+								<td class="wa_ex_size_cell">
+									Height<br>
+									<input type="text" maxlength="4" value="" class="wa_ex_size" id="wa_ex_frameheight"></input>
+								</td>
+							</tr></table>
+							<button onclick="wa_ex_force_refresh();">Force Refresh</button>
+						</td>
+						<td id="wa_ex_mode_cell">
+							<span class="ej_secondary_label">Rendering Mode</span><br>
+							<select name="Q_EXTERNAL_mode" id="Q_EXTERNAL_mode" onchange="wa_ex_resetandtrigger();">
+								<option selected value="design">design</option>
+								<option value="preview">preview</option>
+								<option value="test">student (test)</option>
+								<option value="sample">check my work (sample)</option>
+								<option value="review">post submission (review)</option>
+							</select>
+						</td>
+						<td id="wa_ex_score_cell">
+							<div id="wa_ex_score_cell_contents">
+								<span class="ej_secondary_label">Rendering State</span><br>
+								<button onclick="wa_ex_gather();">Retrieve</button><br>
+								<span id="wa_ex_eval" name="Q_EXTERNAL_eval"></span>
+							</div>
+						</td>
+					</tr>
+				</table>
+
+			</div>
+
+			<input type="hidden" id="Q_EXTERNAL_instanceid" name="Q_EXTERNAL_instanceid" value="instance"></input>
+			<input type="hidden" id="Q_EXTERNAL_rnd" name="Q_EXTERNAL_rnd" value=""></input>
+			<input type="hidden" id="Q_EXTERNAL_media" name="Q_EXTERNAL_media" value=""></input>
+			<input type="hidden" id="Q_EXTERNAL_eval" name="Q_EXTERNAL_eval" value=""></input>
+			<textarea autocomplete=\"off\" spellcheck=\"false\" style="display:none;" id="Q_EXTERNAL_state" name="Q_EXTERNAL_state"></textarea>
+
+			<iframe class="wk_ex_iframe" id="Q_EXTERNAL" name="Q_EXTERNAL"></iframe>
+			
+			<br><input type="checkbox" id="wa_ex_manualediting" value="1" onchange="wa_ex_togglemanual();">edit/view the state manually</input>
+			<span id="wa_ex_statewrapper">
+				&nbsp;<button id="wa_ex_usestate" onclick="wa_ex_resetandtrigger();">Use this state in the area above</button><br>
+				<textarea autocomplete=\"off\" spellcheck=\"false\" rows="30" cols="100" id="wa_ex_state"></textarea>
+			</span>
+
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_lv">
+		
+			<p>
+				<div class="ej_primary_label">Label Response Width</div>
+				<input type="text" maxlength="3" size="4" value="" id="wa_lv_labelwidth"></input>
+			</p>
+
+			<p>
+				<div class="ej_primary_label">Value Response Width</div>
+				<input type="text" maxlength="3" size="4" value="" id="wa_lv_valuewidth"></input>
+			</p>
+
+			<div class="ej_primary_label">Groups</div>
+			<ul id="wa_lv_groups" class="sortable">
+				
+				<li class="wa_lv_group_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="wa_lv_group_table">
+					<tr>
+						<td class="ej_table_label wa_lv_group_label" rowspan="3">X</td>
+						<td>
+							Label<br>
+							<input type="text" maxlength="255" value="" class="bordered_input wa_lv_label"></input>
+						</td>
+						<td>
+							Answer<br>
+							<input type="text" maxlength="255" value="" class="bordered_input wa_lv_answer"></input>
+						</td>
+						<td>
+							Position<br>
+							<input type="text" maxlength="2" value="" class="bordered_input wa_lv_position"></input>
+						</td>
+						<td class="wa_lv_control_cell" rowspan="3">
+							<button class="wa_lv_delete"></button>
+						</td>
+					</tr>
+					<tr>
+						<td colspan="3">
+							Precision Tolerance<br>
+							<select class="wa_lv_ptype">
+								<option selected value="0">exact</option>
+								<option value="1">absolute error</option>
+								<option value="2">percentage error</option>
+							</select>&nbsp;
+							<span class="wa_lv_pval">
+								&plusmn;&nbsp;
+								<input type="text" maxlength="20" value="" class="bordered_input wa_lv_slop"></input>
+							</span>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							Formatting Pattern<br>
+							<input type="text" maxlength="80" value="" class="bordered_input wa_lv_format"></input>
+						</td>
+						<td colspan="2">
+							Units<br>
+							<input type="text" maxlength="80" value="" class="bordered_input wa_lv_units"></input>&nbsp;&nbsp;
+							<input type="checkbox" value="true" class="wa_lv_currency">currency</input>
+						</td>
+					</tr>
+				</table></li>
+	
+			</ul>
+			<div id="wa_lv_add">
+				<a href="javascript:void(0);" onclick="wa_lv_add();">+ add another answer</a>
+			</div>
+
+			<div class="wa_scoring">
+				<input type="checkbox" value="true" id="wa_lv_acceptany">accept any answer as correct</input>
+			</div>
+
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_sp">
+
+			<table id="wa_sp_size_table">
+				<tr>
+					<td id="wa_sp_width_cell">
+						Width<br>
+						<input type="text" maxlength="4" value="" id="wa_sp_width"></input>
+					</td>
+					<td id="wa_sp_height_cell">
+						Height<br>
+						<input type="text" maxlength="4" value="" id="wa_sp_height"></input>
+					</td>
+					<td>&nbsp;</td>
+					<td id="wa_sp_scoring_cell" rowspan="2">
+						<div id="wa_sp_scoring_wrapper">
+							<span class="ej_secondary_label">Scoring Method</span><br>
+							<input type="checkbox" id="wa_sp_casesensitive">answers are case sensitive</input><br>
+							<input type="checkbox" value="true" id="wa_sp_acceptany">accept any answer as correct</input>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td id="wa_sp_palette_cell" colspan="3">
+						<div class="ej_secondary_label">special character palette:
+							<select class="special_char_palette" id="wa_sp_palette"></select>
+						</div>
+					</td>
+				</tr>
+			</table>
+
+			<div id="wa_sp_controls">
+				<select id="wa_sp_typelist" onchange="wa_sp_toolchange();">
+					<option value="">select learning object</option>
+				</select>
+			</div>
+
+			<form id="wa_sp_form" name="wa_sp_form" action="/editor.tpx" method="post" target="wa_sp_iframe">
+				<input type="hidden" id="wa_sp_ezid" name="ezid" value=""></input>
+				<input type="hidden" id="wa_sp_qid" name="qid" value=""></input>
+				<input type="hidden" id="wa_sp_answer_id" name="answer_id" value=""></input>
+				<input type="hidden" id="wa_sp_key" name="key" value=""></input>
+				<input type="hidden" name="qe2" value="get_sparkplug"></input>
+			</form>
+			<iframe name="wa_sp_iframe" id="wa_sp_iframe"></iframe>
+			
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_lc">
+		
+			<div class="ej_primary_label">Correct Answers</div>
+			<ul id="wa_lc_answers" class="sortable">
+				
+				<li class="wa_lc_answer_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="wa_lc_answer_table"><tr>
+					<td class="ej_table_label wa_lc_answer_label">X</td>
+					<td>
+						<input type="text" maxlength="255" value="" class="bordered_input wa_lc_correctAnswer"></input>
+					</td>
+					<td class="wa_lc_answer_control_cell">
+						<button class="wa_lc_delete"></button>
+					</td>
+				</tr></table></li>
+	
+			</ul>
+			<div id="wa_lc_add">
+				<a href="javascript:void(0);" onclick="wa_lc_add();">+ add another answer</a>
+			</div>
+
+			<br><div id="wa_lc_layout_title" class="ej_secondary_label">response layout:</div>
+			<table class="layout_table" id="wa_lc_layout_table">
+				<tr>
+					<td id="wa_lc_ancillary">
+						Response Textbox Width<br><input type="text" maxlength="3" value="" id="wa_lc_width"></input><br>&nbsp;<br>
+						Number of Response Fields<br><input type="text" maxlength="3" value="" id="wa_lc_fields"></input>
+					</td>
+					<td>
+						<div class="mc_layout_vertical"></div>
+						vertical<br>
+						<input type="radio" name="wa_mc_layout" id="wa_lc_preso_v" value="vertical"/>
+					</td>
+					<td>
+						<div class="mc_layout_horiz"></div>
+						horizontal<br>
+						<input type="radio" name="wa_mc_layout" id="wa_lc_preso_h" value="horizontal"/>
+					</td>
+					<td>
+						<div class="mc_layout_twocol"></div>
+						two column<br>
+						<input type="radio" name="wa_mc_layout" id="wa_lc_preso_tc" value="two_column"/>
+					</td>
+				</tr>
+			</table><br>
+
+			<div class="ej_primary_label">Response Formatting</div>
+			<table class="fb_textcontrols">
+				<tr class="fb_tc_dotted">
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_lc_casesensitive">answers are case sensitive</td>
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_lc_casesensitiveOR">ignore assignment policy</td>
+				</tr>
+				<tr class="fb_tc_dotted">
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_lc_ignoreaccents">ignore accents</td>
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_lc_ignoreaccentsOR">ignore assignment policy</td>
+				</tr>
+				<tr>
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_lc_ignorespacing">ignore spacing and punctuation</td>
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_lc_ignorespacingOR">ignore assignment policy</td>
+				</tr>
+			</table>
+			
+			<br>
+			<div class="ej_secondary_label">special character palette:
+				<select class="special_char_palette" id="wa_lc_palette"></select> </div>
+			
+			<div class="wa_scoring">
+				<input type="checkbox" value="true" id="wa_lc_acceptany">accept any answer as correct</input>
+			</div>
+
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_mc">
+
+			<span class="ej_uninvolved">Answer Choices</span>	
+			<ul id="wa_mc_choices" class="sortable">
+				
+				<li class="wa_mc_choice_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="wa_mc_choice_table"><tr>
+					<td class="ej_table_label wa_mc_choice_label">X</td>
+					<td class="wa_mc_choicecell">
+						<input class="bordered_input wa_mc_distractor" maxlength="255"></input>
+					</td>
+					<td class="wa_mc_choice_controls">
+						<button class="wa_mc_correctness"></button>
+						<button class="wa_mc_del_control"></button>
+					</td>
+				</tr></table></li>
+	
+			</ul><!-- end sortable choices -->
+			
+			<!-- add new choice control -->
+			<div id="wa_mc_add_choice">
+				<a href="javascript:void(0);" onclick="wa_mc_add();">+ add another choice</a>
+			</div>
+
+			<br><div id="wa_mc_layout_title" class="ej_secondary_label">choice layout:</div>
+			<table class="layout_table" id="wa_mc_layout_table">
+				<tr>
+					<td id="wa_mc_ancillary">
+						<input type="checkbox" value="true" id="wa_mc_scramble">scramble choices</input><br>&nbsp;<br>
+						width: <input type="text" maxlength="3" size="4" value="" id="wa_mc_width"></input> pixels<br>&nbsp;<br>
+						prompt:<br><input type="text" maxlength="80" value="" id="wa_mc_prompt"></input>
+					</td>
+					<td>
+						<div class="mc_layout_dropdown"></div>
+						drop-down<br>
+						<input type="radio" name="wa_mc_layout" id="wa_mc_preso_dd" value="drop-down"/>
+					</td>
+					<td>
+						<div class="mc_layout_vertical"></div>
+						vertical<br>
+						<input type="radio" name="wa_mc_layout" id="wa_mc_preso_v" value="vertical"/>
+					</td>
+					<td>
+						<div class="mc_layout_horiz"></div>
+						horizontal<br>
+						<input type="radio" name="wa_mc_layout" id="wa_mc_preso_h" value="horizontal"/>
+					</td>
+					<td>
+						<div class="mc_layout_twocol"></div>
+						two column<br>
+						<input type="radio" name="wa_mc_layout" id="wa_mc_preso_tc" value="two_column"/>
+					</td>
+				</tr>
+			</table>
+			
+			<div class="wa_scoring">
+				<input type="checkbox" value="true" id="wa_mc_acceptany">accept any answer as correct</input>
+			</div>
+			
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_nu">
+
+			<div class="ej_primary_label">Correct Answer</div>
+			<input type="text" maxlength="255" size="20" value="" class="bordered_input" id="wa_nu_correctAnswer"></input>
+
+			<p>
+				<div class="ej_primary_label">Response Textbox Width</div>
+				<input type="text" maxlength="3" size="4" value="" id="wa_nu_width"></input>
+			</p>
+
+			<p>
+				<div class="ej_primary_label">Precision Tolerance</div>
+				<div id="wa_nu_prec">
+					<select id="wa_nu_ptype" onchange="wa_nu_prec_ctrls();">
+						<option selected value="0">exact</option>
+						<option value="1">absolute error</option>
+						<option value="2">percentage error</option>
+					</select>&nbsp;
+					<span id="wa_nu_pval">
+						&plusmn;
+						<input type="text" maxlength="20" size="8" value="" id="wa_nu_pstr"></input>
+					</span>
+				</div>
+			</p>
+			
+			<p>
+				<div class="ej_primary_label">Formatting Pattern</div>
+				<input type="text" maxlength="40" size="20" value="" id="wa_nu_format"></input>
+			</p>
+			
+			<p>
+				<div class="ej_primary_label">Units</div>
+				<input type="text" maxlength="40" size="20" value="" id="wa_nu_units"></input>
+				&nbsp;<input type="checkbox" value="true" id="wa_nu_currency">currency</input>
+			</p>
+			
+			<div class="wa_scoring">
+				<input type="checkbox" value="true" id="wa_nu_acceptany">accept any answer as correct</input>
+			</div>
+
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_fb">
+		
+			<div class="ej_primary_label">Correct Answers</div>
+			<ul id="wa_fb_answers" class="sortable">
+				
+				<li class="wa_fb_answer_template ui-state-default" style="display: none;"><span class="ui-icon ui-icon-arrowthick-2-n-s"></span>
+				<table class="wa_fb_answer_table"><tr>
+					<td class="ej_table_label wa_fb_answer_label">X</td>
+					<td>
+						<input type="text" maxlength="255" value="" class="bordered_input wa_fb_correctAnswer"></input>
+					</td>
+					<td class="wa_fb_answer_control_cell">
+						<button class="wa_fb_del_answer_control"></button>
+					</td>
+				</tr></table></li>
+	
+			</ul>
+			<div id="wa_fb_add_answer">
+				<a href="javascript:void(0);" onclick="wa_fb_add_answer();">+ add another answer</a>
+			</div>
+
+			<p>
+				<div class="ej_primary_label">Response Textbox Width</div>
+				<input type="text" maxlength="3" size="4" value="" id="wa_fb_width"></input>
+			</p>
+
+			<div class="ej_primary_label">Response Formatting</div>
+			<table class="fb_textcontrols">
+				<tr class="fb_tc_dotted">
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_fb_casesensitive">answers are case sensitive</td>
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_fb_casesensitiveOR">ignore assignment policy</td>
+				</tr>
+				<tr class="fb_tc_dotted">
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_fb_ignoreaccents">ignore accents</td>
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_fb_ignoreaccentsOR">ignore assignment policy</td>
+				</tr>
+				<tr>
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_fb_ignorespacing">ignore spacing and punctuation</td>
+					<td class="fb_tc_td"><input type="checkbox" class="fb_tc_cb" id="wa_fb_ignorespacingOR">ignore assignment policy</td>
+				</tr>
+			</table>
+			
+			<br>
+			<div class="ej_secondary_label">special character palette:
+				<select class="special_char_palette" id="wa_fb_palette"></select> </div>
+			
+			<div class="wa_scoring">
+				<input type="checkbox" value="true" id="wa_fb_acceptany">accept any answer as correct</input>
+			</div>
+
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_tf">
+
+			<div class="ej_primary_label">Answer Choices</div>
+
+			<div id="wa_tf_choices">
+				<table class="ui-state-default tf_choice_table">
+					<tr>
+						<td class="tf_label">true</td>
+						<td class="tf_choice_controls">
+							<button id="wa_tf_trueCorrect" class="tf_correctness tf_incorrect"></button>
+						</td>
+					</tr>
+				</table>
+
+				<table class="ui-state-default tf_choice_table">
+					<tr>
+						<td class="tf_label">false</td>
+						<td class="tf_choice_controls">
+							<button id="wa_tf_falseCorrect" class="tf_correctness tf_correct"></button>
+						</td>
+					</tr>
+				</table>
+			</div>
+			
+			<div class="wa_scoring">
+				<input type="checkbox" value="true" id="wa_tf_acceptany">accept any answer as correct</input>
+			</div>
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_ue">
+		
+			<div class="ej_primary_label">Response Formatting</div>
+			<table id="wa_ue_textcontrols">
+				<tr>
+					<td>
+						Width<br>
+						<input type="text" class="wa_ue_text" id="wa_ue_width" maxlength="3"></input>
+					</td>
+					<td>
+						Height<br>
+						<input type="text" class="wa_ue_text" id="wa_ue_height" maxlength="3"></input>
+					</td>
+				</tr>
+			</table>
+			
+			<br>
+			<div class="ej_secondary_label">special character palette:
+				<select class="special_char_palette" id="wa_ue_palette"></select> </div>
+			
+			<p>
+				<div class="ej_primary_label">Sample Response</div>
+				<textarea cols="80" rows="10" class="bordered_input" id="wa_ue_sample"></textarea>
+			</p>
+			
+			<div class="wa_scoring">
+				<input type="checkbox" id="wa_ue_rich_text">Enable rich text editing</input>
+			</div>
+				
+		</div>
+	
+		<div class="wa_editor" id="wk_wa_edit_vv">
+			
+			<p>
+				<div class="ej_primary_label">Video Link</div>
+				<input class="bordered_input" type="text" maxlength="500" value="" id="wa_vv_vlink"></input>
+			</p>
+
+			<p>
+				<div class="ej_primary_label">Correct Answer Audio Link</div>
+				<input class="bordered_input" type="text" maxlength="500" value="" id="wa_vv_alink"></input>
+			</p>
+
+			<div class="wa_scoring">
+				<input type="checkbox" value="true" id="wa_vv_acceptany">accept any answer as correct</input>
+			</div>
+			
+		</div>
+	
+	</div>
+	
+</div><!-- end worksheet answer tab -->
+
+
+</div><!-- content ends here -->
+
+
+<form name="random_editing" target="randoms_frame" action="/editor.tpx" method="post" onsubmit="return false;">
+	<input type="hidden" name="ezid" id="re_ezid" value=""/>
+	<input type="hidden" name="qid" id="re_qid" value=""/>
+	<input type="hidden" name="key" id="re_key" value=""/>
+	<input type="hidden" name="qe2" value="randoms"/>
+</form>
+
+<form name="category_editing" target="categories_frame" action="/editor.tpx" method="post" onsubmit="return false;">
+	<input type="hidden" name="ezid" id="cat_ezid" value=""/>
+	<input type="hidden" name="qid" id="cat_qid" value=""/>
+	<input type="hidden" name="key" id="cat_key" value=""/>
+	<input type="hidden" name="qe2" value="categories"/>
+</form>
+
+
+</div>
+
+<!-- Dialogs -->
+<div id="editorRestriction_dialog" title="One moment please">
+	<p>You may not interact until the previous text editor loads successfully.<br />Please wait..</p>	
+</div>
+
+<div id="revert_dialog" title="Revert Changes">
+	<p>You're about to revert this <b>question</b> to it's original state at the beginning of your visit.</p>
+	<p>Any changes you've made since will be lost.</p>
+	<p class="warning_question">Are you sure you want to do this?</p>
+</div>
+
+<div id="wa_revert_dialog" title="Revert Answer Changes">
+	<p>You're about to revert this <b>answer</b> to it's original state at the beginning of your visit.</p>
+	<p>Any changes you've made since will be lost.</p>
+	<p class="warning_question">Are you sure you want to do this?</p>
+</div>
+
+<div id="cat_delete_dialog" title="Delete Category">
+	<p>You're about to delete a category from this assignment or test bank.</p>
+	<p>This will not delete any questions in the category.  It will only drop the category definition and the questions' common membership in it.</p>
+	<p class="warning_question">Are you sure you want to do this?  It is NOT reversible.</p>
+</div>
+
+<div id="validation_dialog" title="Validation - Serious errors exist in this question...">
+	<div id="error_content"></div>
+	<div class="warning_content"></div>
+	<p class="error_statement">Nothing was saved, you must correct these errors...</p>
+</div>
+
+<div id="validation_warnings" title="Validation - Problems may exist in this question...">
+	<div class="warning_content"></div>
+	<p class="warning_question">Are you sure you want to continue and save anyway?</p>
+</div>
+
+<div id="media_resize_dialog" title="Resizing Media">
+	<p>You're about to resize a media item everywhere it appears in this assignment or test bank.</p>
+	<p class="warning_question">Are you sure you want to do this?</p>
+</div>
+
+<div id="bad_worksheet_answer_title" title="Renaming an answer">
+	<p>The name which you've entered contains illegal characters.<br> <br>
+	Only roman letters and numbers may be used.</p>
+</div>
+
+<div id="media_delete_dialog" title="Deleting Media">
+	<p>You're about to delete a media item from this assignment or test bank.</p>
+	<p>If other questions in the assignment consume the media, they may show broken links.</p>
+	<p class="warning_question">Are you sure you want to do this?</p>
+</div>
+
+<div id="sparkplug_change_dialog" title="Changing Learning Object">
+	<p>You're about to change the learning object for this answer.</p>
+	<p class="warning_question">Are you sure you want to do this?</p>
+</div>
+
+<div id="external_change_dialog" title="Changing External Tool">
+	<p>You're about to change the tool for this answer.</p>
+	<p class="warning_question">Are you sure you want to do this?</p>
+</div>
+
+<div id="external_retain_dialog" title="Updating External Tool Saved State Data">
+	<p>Possibly updated state data has been retrieved from the external tool.</p>
+	<p class="warning_question">Do you wish to use this new state data when you save your changes?</p>
+</div>
+
+<div id="media_preview" title="Media Preview">
+	<p id="media_content"></p>
+</div>
+<iframe name="sound_preview" src="" width="1" height="1"></iframe>
+
+<div id="new_question_dialog" title="Add a Question">
+	<p id="new_question_intro">You're about to create a new <span id="new_question_type">type</span> question.</p>
+	<p id="new_question_posctrl">Where do you want the new question placed?<br>
+		<select id="new_question_position" onchange="newq_pos();">
+			<option selected value="after">after the current question</option>
+			<option value="before">before the current question</option>
+			<option value="top">at the beginning of this assignment</option>
+			<option value="bottom">at the end of this assignment</option>
+		</select>
+	</p>
+	<p id="new_question_mpctrl">
+		<input type="checkbox" value="multipart" id="new_question_multipart" onclick="newq_mp();">make the new question a part of the current multipart question
+	</p>
+</div>
+
+<div id="dup_question_dialog" title="Duplicate Question">
+	<p id="dup_question_intro">You're about to duplicate this <span id="dup_question_type">type</span> question.</p>
+	<p id="dup_question_posctrl">Where do you want the duplicate placed?<br>
+		<select id="dup_question_position" onchange="newq_pos();">
+			<option selected value="after">after the current question</option>
+			<option value="before">before the current question</option>
+			<option value="top">at the beginning of this assignment</option>
+			<option value="bottom">at the end of this assignment</option>
+		</select>
+	</p>
+	<p id="dup_question_mpctrl">
+		<input type="checkbox" value="multipart" id="dup_question_multipart" onclick="newq_mp();">make the new question a part of the current multipart question
+	</p>
+</div>
+
+<div id="exit_save_dialog" title="Save before exiting?">
+	<p class="warning_question">Do you wish to save the current question before exiting?</p>
+</div>
+
+<div id="wa_save_dialog" title="Save before exiting?">
+	<p class="warning_question">Do you wish to save any changes to the current answer before exiting?</p>
+</div>
+
+<div id="lsi_edit_dialog" title="You must complete the next step...">
+	<p>When you edit this kind of question, you must fully complete the next process and 
+	save your work in the provided new editing window.  The question will not function
+	correctly if you fail to do so.</p>
+	<p class="warning_question">Are you sure you want to start the editing process?</p>
+</div>
+
+<div id="wa_add_dialog" title="New Worksheet Answer">
+	<p>
+		Please enter a name for the new answer:
+		<div id="wa_newname_div">
+			<input type="text" id="wa_newname" maxlength="50" size="20" value=""></input>
+		</div>
+	</p>
+	<div id="wa_newname_error" class="error_statement"></div>
+</div>
+
+<div id="cat_error_dialog" title="Error creating new category">
+	<p id="category_error"></p>
+</div>
+
+<!-- form target="testContent" name="ezlist_exit" action="" method="post">
+	<input type="hidden" name="REQUEST" value="manageTest">
+	<input type="hidden" name="manageTest" value="v7_listQuestions">
+	<input type="hidden" name="v7_listQuestions" value="listQuestions">
+</form -->
+<div id="propagateQuestion_dialog" title="Propagating Question Update">
+	<p>Your request has been submitted. Your changes will be propagated after 7:00 am Eastern Time tomorrow.</p>
+</div>
+<form target="ezlib_frame" name="ezlib_exit" action="/admin2.tpx" method="post">
+	<input type="hidden" name="REQUEST" value="propagateQuestion">
+	<input type="hidden" name="tab" value="library">
+	<input type="hidden" name="tid" value="">
+	<input type="hidden" name="qid" value="">
+	<input type="hidden" name="editReason" value="">
+</form>
+<iframe name="ezlib_frame" id="ezlib_frame" src="" style="visibility: hidden;" ></iframe>
+
+<div id="ej_spinner"><img src="css/images/ajax-loader.gif"></img></div>
+
+</body>
+</html>

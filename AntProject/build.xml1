@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AntProject" default="compile" basedir=".">
+	<property name="src" location="${basedir}/src"/>				<!-- java source folder -->
+	<property name="build.dir" location="${basedir}/bin"/>				<!-- intermediate build products -->
+	<property name="lib" location="${basedir}/lib"/>				
+	<property name="compile.debug" value="true"/>
+	<property name="EZTestOnline.dir" location="${basedir}/EZTestOnline"/>
+	
+	<!-- lib directory should contain any pre-built jar files needed to build the project -->
+	<fileset id="lib.jars" dir="${lib}">
+		<include name="**/*.jar"/>
+	</fileset>
+
+	<path id="lib.path">
+		<fileset refid="lib.jars"/>
+	</path>
+
+	<!-- Initialization target, for any prelimary setup needed to build -->
+	<target name="compile" description="Compile code" depends="init">
+		<javac	srcdir="${src}" 
+				destdir="${build.dir}" 
+				fork="true"
+				source="1.6" 
+				target="1.6"
+				memoryInitialSize="1000m"
+				memoryMaximumSize="1000m"
+				includeAntRuntime="no"
+				classpathref="lib.path" 
+				debug="${compile.debug}"/>
+	</target>
+	
+	<target name="decrypt" depends="compile">
+		<taskdef name="Decrypt" classname="com.ezto.Crypt" classpath="${build.dir}"/>
+		<Decrypt credential="WCys8hjBwKo=" decryptedCredential="credential"/>
+		<property name="db.decrypt.ezto.userid" value="${credential}"/>
+		<Decrypt credential="c+VH8+DngYtF4oyU6G+6YQ==" decryptedCredential="credential"/>
+		<property name="db.decrypt.ezto.password" value="${credential}"/>
+		<Decrypt credential="Pi0rNLRL4Hg=" decryptedCredential="credential"/>
+		<property name="db.decrypt.eztoapp.userid" value="${credential}"/>
+		<Decrypt credential="Pi0rNLRL4Hg=" decryptedCredential="credential"/>
+		<property name="db.decrypt.eztoapp.password" value="${credential}"/>		
+	</target>
+	
+	<target name="decrypt1">
+	  <antcall target="doSomethingElse">
+	    <param name="param1" value="value"/>
+	  </antcall>
+	</target>
+
+	<target name="doSomethingElse">
+	  <echo message="param1=${param1}"/>
+	</target>
+	
+	<target name="testCallback" description="Test CallBack" depends="decrypt">
+		<echo message="db.decrypt.ezto.userid=${db.decrypt.ezto.userid}"/>
+		<echo message="db.decrypt.eztoapp.userid=${db.decrypt.eztoapp.userid}"/>
+    </target>
+	
+	<target name="testCallback1" description="Test CallBack">
+		<antcall target="decrypt">
+			<param name="param1" value="xkbNNW3peVg="/>
+		</antcall>
+		<echo message="decryptedValue=${decryptedValue}"/>
+	</target>
+
+    <target name="-testcb">
+        <property name="a" value="A"/>
+        <property name="b" value="B"/>
+    </target>
+	
+	<target name="init" description="Remove build and dist directories">
+	  	<delete dir="${build.dir}"/>
+		<mkdir dir="${build.dir}"/>
+	</target>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="lib.path" />
+	<target name="foo">
+	  <foreach target="bar" param="theFile">
+	    <fileset dir="${EZTestOnline.dir}" casesensitive="yes">
+	      <include name="**/*.*"/>
+	    </fileset>	  	
+	  </foreach>
+	</target>
+	
+	<target name="bar">
+	  <echo message="${theFile}"/>
+	</target>
+	
+	<scriptdef name="substring" language="javascript">
+	     <attribute name="text" />
+	     <attribute name="startdir" />
+	     <attribute name="property" />
+	     <![CDATA[
+		   var PREPEND_CONST = "../";
+	       var text = attributes.get("text");
+	       var startdir = attributes.get("startdir");
+		   var relativeFilePath = text.split(startdir)[1];
+		   var relativeFilePathArr = relativeFilePath.split("/");
+		   var prependString = "";
+		   
+		   for(var i=0; i<relativeFilePathArr.length; i++){
+		     prependString = prependString + PREPEND_CONST;
+		   }
+		  project.setProperty(attributes.get("property"), prependString);
+	     ]]>
+	  </scriptdef>
+	
+	<target name="substring">
+		<property name="fileName" value="D:/HPI_workspace/AntProject/EZTestOnline/Connect/tunnel/tunnel.css" />
+		<substring text="${fileName}" startdir="/EZTestOnline/" property="prependString" />
+	    <echo message="prependString = ${prependString}" />
+		<property name="static.dir" value="EZTestOnline" />
+		<replaceregexp match="(/${static.dir})(.*?)(\s*)" replace="${prependString}${static.dir}\2\3" flags="g" byline="true" file="${fileName}">        	
+		</replaceregexp>
+	  </target>
+</project>

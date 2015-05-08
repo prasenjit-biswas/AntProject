@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="AntProject" default="init" basedir=".">
+	<property name="lib" location="${basedir}/lib"/>
+	<property name="dist" location="${basedir}/dist"/>
+	<property name="compile.debug" value="true"/>
+	<property name="src.EZTestOnline.dir" location="${basedir}/EZTestOnline"/>
+	<property name="dist.EZTestOnline.dir" location="${dist}/EZTestOnline"/>
+	<property name="static.dir" value="EZTestOnline" />
+	<property file="${basedir}/build/${hostname}.properties"/>
+		
+	<input addproperty="hostname">Hostname: </input>
+	<!-- lib directory should contain any pre-built jar files needed to build the project -->
+	<fileset id="lib.jars" dir="${lib}">
+		<include name="**/*.jar"/>
+	</fileset>
+
+	<path id="lib.path">
+		<fileset refid="lib.jars"/>
+	</path>
+
+	<target name="init" description="Remove build and dist directories">
+	  	<delete dir="${dist}"/>
+		<mkdir dir="${dist}"/>
+	</target>
+	
+	<target name="copy-static" depends="init">
+		<copy todir="${dist.EZTestOnline.dir}" failonerror="false" verbose="false">
+		  <fileset dir="${src.EZTestOnline.dir}"/>	
+		</copy>
+    </target>
+	
+	<scriptdef name="generate-relative-path" language="javascript">
+	     <attribute name="text" />
+	     <attribute name="startdir" />
+	     <attribute name="property" />
+	     <![CDATA[
+			var PREPEND_CONST = "..";
+			var text = attributes.get("text");
+			var startdir = attributes.get("startdir");
+			var relativeFilePath = text.split(startdir)[1];
+		    relativeFilePath = relativeFilePath.substr(0, relativeFilePath.lastIndexOf("/"));
+			var relativeFilePathArr = relativeFilePath.split("/");
+			var prependString = "";
+			   
+			for(var i=0; i<relativeFilePathArr.length; i++){
+		 	  if(prependString.length > 0){
+			    prependString = prependString + "/";
+			  }
+			  prependString = prependString + PREPEND_CONST;
+			}
+			project.setProperty(attributes.get("property"), prependString);
+	     ]]>
+	  </scriptdef>
+	
+	<taskdef resource="net/sf/antcontrib/antlib.xml" classpathref="lib.path" />
+	<target name="append-s3-url" depends="copy-static">
+	  <foreach target="prepend-relative-path" param="fileName">
+	    <fileset dir="${dist.EZTestOnline.dir}" includes="**/*.htm **/*.html **/*.js **/*.css" excludes="**/NimbbPlayer.js **/editor_types.js"/>
+	  </foreach>
+	</target>
+	
+	<target name="prepend-relative-path">
+		<generate-relative-path text="${fileName}" startdir="/${static.dir}/" property="prependString" />
+	    <echo message="prepending ${prependString} in ${fileName}"/>
+		<replaceregexp match="(/${static.dir})(.*?)(\s*)" replace="${prependString}\2\3" flags="g" byline="true" file="${fileName}"/>        	
+	</target>
+	
+	<target name="append-s3-url-html" description="Append s3 url" depends="copy-static">
+    	<!--
+		<replaceregexp match="(/EZTestOnline)(.*?)(\s*)" replace="${cssHttpUrl}\1\2\3" flags="g" byline="true">
+        	<fileset dir="${dist}/EZTestOnline/" includes="**/*.htm **/*.html **/*.js **/*.css" excludes="**/NimbbPlayer.js **/editor_types.js"/>
+        </replaceregexp>
+        <replace dir="${dist}/EZTestOnline/" token="CLOUD_FRONT_URL" value="http://ezto-media.mhecloud.mhhe.com/Static/Development/${tagName}" summary="true" includes="**/*.htm **/*.html"/>
+		-->
+		<replace dir="${dist}/EZTestOnline/" token="/EZTestOnline/" value="http://ezto-media.mhecloud.mhhe.com/Static/Development/${tagName}/EZTestOnline/" summary="true" includes="**/*.css **/*.htm **/*.html" excludes="**/admin.html"/>
+	</target>
+	
+	
+	<condition property="strings-match">
+	    <equals arg1="${hostname}" arg2="clouddev2" casesensitive="false"/>
+	</condition>
+
+	<target name="display-props">
+	    <echo>"arg1 = ${hostname}"</echo>
+	    <echo>"arg2 = clouddev2"</echo>
+	    <echo>"strings-match = ${strings-match}"</echo>
+	</target>
+	
+	
+	<target name="prepareDeploy">
+		<if>
+	    	<or>
+	    		<equals arg1="${hostname}" arg2="clouddev2" casesensitive="false"/>
+	    		<equals arg1="${hostname}" arg2="clouddev" casesensitive="false"/>
+	    		<equals arg1="${hostname}" arg2="clouddevintegration" casesensitive="false"/>
+	    	</or>
+	    	<then>
+	    		<input addproperty="tagname">Tag Name: </input>
+	    		<echo message="condition missmatched"/>
+	    	</then>
+	    	<else>
+	    		<input addproperty="buildNum">Build number: </input>
+	    		<echo message="condition matched"/>
+	    		<propertyregex property="tagname"
+				              input="${buildNum}"
+				              regexp="(.*?)_[^_]*"
+				              select="\1" />
+				<echo message="${tagname}" />
+	    		<echo message="${cfurl}"/>
+	    		<echo message="${static.deploy.host}"/>
+	    		<echo message="${buildNum}"/>
+	    	</else>
+	    </if>
+	</target>
+	
+	<target name="condition-true" depends="display-props" if="${strings-match}">
+	    <echo>true</echo>
+	</target>
+	
+</project>

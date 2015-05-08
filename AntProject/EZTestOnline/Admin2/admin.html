@@ -1,0 +1,134 @@
+<!-- DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd" -->
+<html>
+	<head>
+	  <title>EZTest Online Administration</title>
+	  <script>var clouFrontUrl = 'CLOUD_FRONT_URL'</script>
+		<link rel="stylesheet" type="text/css" href="/EZTestOnline/jquery/jqueryui_1.8.1/jquery-ui.css">
+		<link rel="stylesheet" type="text/css" href="/EZTestOnline/Admin2/xmenu.eztest.css">
+		<link rel="stylesheet" type="text/css" href="/EZTestOnline/Admin2/eztest.css">
+		<link rel="stylesheet" type="text/css" href="/EZTestOnline/Admin2/eztest.admin.css">
+		<script type="text/javascript" src="/EZTestOnline/Admin2/xmenu/cssexpr.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/Admin2/xmenu/xmenu.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/jquery/jquery_1.4.1/jquery.min.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/jquery/jqueryui_1.8.1/jquery.ui.core.min.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/jquery/jqueryui_1.8.1/jquery.ui.widget.min.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/jquery/jqueryui_1.8.1/jquery.ui.mouse.min.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/jquery/jqueryui_1.8.1/jquery.ui.draggable.min.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/jquery/jqueryui_1.8.1/jquery.ui.sortable.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/jquery/jqueryui_1.8.1/jquery.ui.resizable.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/Admin2/jquery.form.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/Admin2/jquery.cookie.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/Admin2/jquery.progressbar.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/Admin2/admin.menubar.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/Flash/AC_OETags.js"></script>
+		<script type="text/javascript" src="/admin2.tpx?REQUEST=menus"></script>
+		<script type="text/javascript" src="/EZTestOnline/Admin2/eztest.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/Admin2/admin.js"></script>
+		
+		<script type="text/javascript" src="/EZTestOnline/jquery/plugins/jquery.corner.js"></script>
+		<script type="text/javascript" src="/EZTestOnline/jquery/libs/jqModal.js"></script>
+		<link rel="stylesheet" href="/EZTestOnline/Connect/common/modal/modal.css" type="text/css" />
+		<script type="text/javascript" src="/EZTestOnline/Admin2/similarcontent.js"></script>
+		<link rel="stylesheet" type="text/css" href="/EZTestOnline/Admin2/similarcontent.css" />
+		<script type="text/javascript" src="/EZTestOnline/Admin2/qlistOrder.js"></script>		
+	</head>
+	<body>
+		<div class="header">
+			<img id="eztest-logo" src="/EZTestOnline/Admin2/images/logo.jpg" border="0" alt="EZTest Online">
+			<span id="title">Administration</span>
+			<span id="loginBar">Logged In As: <button id="userButton" disabled="disabled" onclick="DoMenuCommand('AdminInfo')">Log In</button></span>
+			<a href="http://www.mheducation.com/" target="_blank"><img id="mhe-logo" src="/EZTestOnline/Admin2/images/mhe.gif" border="0" alt="McGraw-Hill Education"></a>
+		</div>
+		<div id="curtain"><span>Please Log In...</span></div>
+		<div id="tabBarContainer">
+			<table id="tabBar" border="0" cellpadding="0" cellspacing="0" align="center">
+			  <tr></tr>
+			</table>
+		</div>
+		<div id="tabPaneContainer"></div>
+		<div id="ajaxLoader" onclick="HideLoader()">Loading...</div>
+		<a href="http://www.mheducation.com/" target="_blank" class="mh-stripe" title="McGraw-Hill Education">McGraw-Hill Education</a>
+		<div id="userInfoDialog" class="eztoDialog">
+			<div class="dialogTitle" onselectstart="KillEvent()">User Information</div>
+			<div class="dialogText">
+				<!-- User information inserted here -->
+			</div>
+			<div class="dialogButtons">
+				<a id="okButton"  class="propButton" href="#" onclick="AdminInfoOK()"><span>OK</span></a>
+				<a id="logoutButton" class="propButton" href="#" onclick="Logout()"><span>Log Out</span></a>
+			</div>
+		</div>
+		<div id="popupDialog" class="eztoDialog">
+			<div class="dialogTitle" onselectstart="KillEvent()">EZTest Alert</div>
+			<div class="dialogText">
+				<!-- This is where the dialog text appears... -->
+			</div>
+			<div class="dialogButtons">
+				<a class="propButton" style="width:80px" href="#" onclick="HideEZTestAlert()"><span>OK</span></a>
+			</div>
+		</div>
+		<div id="loadedDialogs">
+		</div>
+		<div id="similiarContentDialog" class="jqmWindow"></div>
+		<div id="matchQuestionDialog" class="jqmWindow">
+			<div class="dialogTitle">Match Question</div>
+			<div id="matchQuestionDialogContent">
+			   <div class="matchQuestionDialogClose"></div>
+			   <div id="questionLoader"><img src="/EZTestOnline/Admin2/images/questionLoader.gif"></div>
+			   <div class="bankList" id="banklist"></div>
+			   <div class="questionList">				
+				<div class="questionListDiv">
+			        <div id="sourceList" class="listOfQues"></div>
+			        <div class="questionFrame">
+			        <form target="sourceFrame" id="sourceFrameForm">
+			    	   <input type="hidden" name="todo" value=""/>
+					   <input type="hidden" name="qid" value=""/>
+					   <input type="hidden" name="tid" value=""/>
+				    </form>
+					<iframe class="previewFrame" id="sourceFrame" name="sourceFrame" frameborder="no" scrolling="yes"></iframe>
+			        </div>
+		     	</div>
+			    <div id="controlCell">						
+						<span id="similarInfo"></span>	
+						<div class="buttonSection">
+							<a onclick="backup();" href="#" class="propButton"><span>Back up</span></a>
+							<a onclick="nomatch();" href="#" class="propButton"><span>No match & next</span></a>
+							<a onclick="match();" href="#" class="propButton"><span>Match & next</span></a><br>
+							<span id="matchedinformation"></span>
+						</div>						
+			    </div>
+			    <div class="questionListDiv">
+			     	<div id="previewList" class="listOfQues"></div>
+			     	<div class="questionFrame">
+			     		<form target="similarFrame" id="previewFrameForm">
+					       <input type="hidden" name="todo" value=""/>
+						   <input type="hidden" name="qid" value=""/>
+						   <input type="hidden" name="tid" value=""/>
+					    </form>
+						<iframe class="previewFrame" id="similarFrame" name="similarFrame" frameborder="no" scrolling="yes"></iframe>
+			     	</div>
+			    </div>
+
+			   </div>
+			</div>		 
+		</div>
+	    <div class="eztoDialog jqmWindow" id="HSSLWorksheetEssayDialog">
+			<div class="dialogTitle"></div>
+			<div class="questionText"></div>		
+			<div class="detailText"></div>
+			<div class="dialogButtons">				
+				<a href="#" class="propButton" id="cancelConfirmButton"><span id="cancelConfirmButtonLabel">Cancel</span></a>
+				<a href="#" class="propButton" id="confirmButton"><span id="confirmButtonLabel" style="width:46px;">Ok</span></a>
+			</div>
+	    </div>
+	    <div class="eztoDialog jqmWindow" id="ExportIsbnTagsDialog">
+			<div class="dialogTitle"></div>
+			<div class="questionText"></div>		
+			<div class="detailText"></div>
+			<div class="dialogButtons">				
+				<a href="#" class="propButton" id="cancelConfirmButton"><span id="cancelConfirmButtonLabel">Cancel</span></a>
+				<a href="#" class="propButton" id="confirmButton"><span id="confirmButtonLabel" style="width:46px;">Ok</span></a>
+			</div>
+	    </div>
+	</body>
+</html>
